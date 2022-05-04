@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PapaBlog.Entities.Concrete;
+using System;
 
 namespace PapaBlog.Data.Concrete.EfCore.Mappings
 {
@@ -22,6 +23,47 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
             builder.Property(x => x.IsActive).IsRequired();
             builder.Property(x => x.IsDeleted).IsRequired();
             builder.Property(x => x.Note).HasMaxLength(500);
+
+            builder.HasData(
+                new Category
+                {
+                    Id = 1,
+                    Name = "C#",
+                    Description = "C#",
+                    CreatedByName = "System",
+                    ModifiedByName = "System",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "C#"
+                },
+                new Category
+                {
+                    Id = 2,
+                    Name = "Java",
+                    Description = "Java",
+                    CreatedByName = "System",
+                    ModifiedByName = "System",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "Java"
+                },
+                new Category
+                {
+                    Id = 3,
+                    Name = "Python",
+                    Description = "Python",
+                    CreatedByName = "System",
+                    ModifiedByName = "System",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "Python"
+                });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PapaBlog.Entities.Concrete;
+using System;
 
 namespace PapaBlog.Data.Concrete.EfCore.Mappings
 {
@@ -32,6 +33,74 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
 
             builder.HasOne<Category>(x => x.Category).WithMany(x => x.Articles).HasForeignKey(x => x.CategoryId);
             builder.HasOne<User>(x => x.User).WithMany(x => x.Articles).HasForeignKey(x => x.UserId);
+
+            builder.HasData(
+                new Article
+                {
+                    Id = 1,
+                    Title = "Test Article",
+                    Content = "Test Article Content",
+                    Date = DateTime.Now,
+                    SeoAuther = "Test SeoAuther",
+                    SeoDescription = "Test SeoDescription",
+                    SeoTags = "Test SeoTags",
+                    CommentCount = 120,
+                    ViewsCount = 10,
+                    Thumbnail = "default.jpg",
+                    CreatedByName = "Test CreatedByName",
+                    ModifiedByName = "Test ModifiedByName",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "Test Note",
+                    CategoryId = 1,
+                    UserId = 1
+                },
+                new Article
+                {
+                    Id = 2,
+                    Title = "Test Article",
+                    Content = "Test Article Content",
+                    Date = DateTime.Now,
+                    SeoAuther = "Test SeoAuther",
+                    SeoDescription = "Test SeoDescription",
+                    SeoTags = "Test SeoTags",
+                    CommentCount = 220,
+                    ViewsCount = 20,
+                    Thumbnail = "default.jpg",
+                    CreatedByName = "Test CreatedByName",
+                    ModifiedByName = "Test ModifiedByName",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "Test Note",
+                    CategoryId = 2,
+                    UserId = 1
+                },
+                new Article
+                {
+                    Id = 3,
+                    Title = "Test Article",
+                    Content = "Test Article Content",
+                    Date = DateTime.Now,
+                    SeoAuther = "Test SeoAuther",
+                    SeoDescription = "Test SeoDescription",
+                    SeoTags = "Test SeoTags",
+                    CommentCount = 320,
+                    ViewsCount = 30,
+                    Thumbnail = "default.jpg",
+                    CreatedByName = "Test CreatedByName",
+                    ModifiedByName = "Test ModifiedByName",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "Test Note",
+                    CategoryId = 3,
+                    UserId = 1
+                });
         }
     }
 }

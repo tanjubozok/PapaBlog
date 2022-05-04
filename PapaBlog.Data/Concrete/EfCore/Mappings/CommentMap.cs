@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PapaBlog.Entities.Concrete;
+using System;
 
 namespace PapaBlog.Data.Concrete.EfCore.Mappings
 {
@@ -23,6 +24,47 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
             builder.Property(x => x.Note).HasMaxLength(500);
 
             builder.HasOne<Article>(x => x.Article).WithMany(x => x.Comments).HasForeignKey(x => x.ArticleId);
+
+            builder.HasData(
+                new Comment
+                {
+                    Id = 1,
+                    ArticleId = 1,
+                    Text = "This is a comment",
+                    CreatedByName = "Admin",
+                    ModifiedByName = "Admin",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "This is a note"
+                },
+                new Comment
+                {
+                    Id = 2,
+                    ArticleId = 2,
+                    Text = "This is a comment",
+                    CreatedByName = "Admin",
+                    ModifiedByName = "Admin",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "This is a note"
+                },
+                new Comment
+                {
+                    Id = 3,
+                    ArticleId = 3,
+                    Text = "This is a comment",
+                    CreatedByName = "Admin",
+                    ModifiedByName = "Admin",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Note = "This is a note"
+                });
         }
     }
 }
