@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapaBlog.Entities", "PapaBlog.Entities\PapaBlog.Entities.csproj", "{18196794-6179-41E8-8F84-49BC1B0B428E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.Entities", "PapaBlog.Entities\PapaBlog.Entities.csproj", "{18196794-6179-41E8-8F84-49BC1B0B428E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapaBlog.Data", "PapaBlog.Data\PapaBlog.Data.csproj", "{E32B9B64-BEA6-4F68-870C-4B893188F0B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.Data", "PapaBlog.Data\PapaBlog.Data.csproj", "{E32B9B64-BEA6-4F68-870C-4B893188F0B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapaBlog.Services", "PapaBlog.Services\PapaBlog.Services.csproj", "{81FF6BA4-B62B-4D9E-BAAF-C94C882DE781}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.Services", "PapaBlog.Services\PapaBlog.Services.csproj", "{81FF6BA4-B62B-4D9E-BAAF-C94C882DE781}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapaBlog.Shared", "PapaBlog.Shared\PapaBlog.Shared.csproj", "{13D09F35-72BB-457F-8E2F-F757C806E116}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.Shared", "PapaBlog.Shared\PapaBlog.Shared.csproj", "{13D09F35-72BB-457F-8E2F-F757C806E116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapaBlog.MvcWebUI", "PapaBlog.MvcWebUI\PapaBlog.MvcWebUI.csproj", "{06BE00A5-8F84-47FB-8DFE-432924E0960C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.MvcWebUI", "PapaBlog.MvcWebUI\PapaBlog.MvcWebUI.csproj", "{06BE00A5-8F84-47FB-8DFE-432924E0960C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapaBlog.Dtos", "PapaBlog.Dtos\PapaBlog.Dtos.csproj", "{EFB8E06F-D039-4DB5-A78A-913F4E578E9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{06BE00A5-8F84-47FB-8DFE-432924E0960C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06BE00A5-8F84-47FB-8DFE-432924E0960C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06BE00A5-8F84-47FB-8DFE-432924E0960C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB8E06F-D039-4DB5-A78A-913F4E578E9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB8E06F-D039-4DB5-A78A-913F4E578E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB8E06F-D039-4DB5-A78A-913F4E578E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB8E06F-D039-4DB5-A78A-913F4E578E9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

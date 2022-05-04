@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PapaBlog.Data\PapaBlog.Data.csproj" />
+    <ProjectReference Include="..\PapaBlog.Dtos\PapaBlog.Dtos.csproj" />
   </ItemGroup>
 
 </Project>
