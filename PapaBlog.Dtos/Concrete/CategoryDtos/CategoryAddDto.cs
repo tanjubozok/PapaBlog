@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace PapaBlog.Dtos.Concrete
+namespace PapaBlog.Dtos.Concrete.CategoryDtos
 {
     public class CategoryAddDto
     {

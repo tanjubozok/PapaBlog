@@ -1,12 +1,12 @@
-﻿using PapaBlog.Data.Abstract;
-using PapaBlog.Dtos.Concrete;
+﻿using AutoMapper;
+using PapaBlog.Data.Abstract;
+using PapaBlog.Dtos.Concrete.CategoryDtos;
 using PapaBlog.Entities.Concrete;
 using PapaBlog.Services.Abstract;
 using PapaBlog.Shared.Utilities.Results.Abstract;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using PapaBlog.Shared.Utilities.Results.Concrete;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PapaBlog.Services.Concrete
@@ -14,30 +14,24 @@ namespace PapaBlog.Services.Concrete
     public class CategoryManager : ICategoryService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CategoryManager(IUnitOfWork unitOfWork)
+        public CategoryManager(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<IResult> Add(CategoryAddDto categoryAddDto, string createByName)
         {
             try
             {
-                await _unitOfWork.Categories.AddAsync(new Category
-                {
-                    Name = categoryAddDto.Name,
-                    Description = categoryAddDto.Description,
-                    Note = categoryAddDto.Note,
-                    IsActive = categoryAddDto.IsActive,
-                    CreatedByName = createByName,
-                    CreatedDate = DateTime.Now,
-                    ModifiedByName = createByName,
-                    ModifiedDate = DateTime.Now,
-                    IsDeleted = false
-                });
-                var category = await _unitOfWork.SaveAsync();
-                if (category == 1)
+                var category = _mapper.Map<Category>(categoryAddDto);
+                category.ModifiedByName = createByName;
+                category.CreatedByName = createByName;
+                await _unitOfWork.Categories.AddAsync(category);
+                var result = await _unitOfWork.SaveAsync();
+                if (result == 1)
                 {
                     return new Result(ResultStatus.Success, $"{categoryAddDto.Name} kategorisi başarılı bir şekilde eklendi.");
                 }
@@ -53,21 +47,25 @@ namespace PapaBlog.Services.Concrete
         {
             try
             {
-                var category = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId);
-                if (category != null)
+                if (await _unitOfWork.Categories.AnyAsync(x => x.Id == categoryId))
                 {
-                    category.IsDeleted = true;
-                    category.ModifiedByName = modifiedByName;
-                    category.ModifiedDate = DateTime.Now;
-                    await _unitOfWork.Categories.UpdateAsycn(category);
-                    var result = await _unitOfWork.SaveAsync();
-                    if (result == 1)
+                    var category = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId);
+                    if (category != null)
                     {
-                        return new Result(ResultStatus.Success, $"{category.Name} kategorisi başarılı bir şekilde silindi.");
+                        category.IsDeleted = true;
+                        category.ModifiedByName = modifiedByName;
+                        category.ModifiedDate = DateTime.Now;
+                        await _unitOfWork.Categories.UpdateAsycn(category);
+                        var result = await _unitOfWork.SaveAsync();
+                        if (result == 1)
+                        {
+                            return new Result(ResultStatus.Success, $"{category.Name} kategorisi başarılı bir şekilde silindi.");
+                        }
+                        return new Result(ResultStatus.Error, "Kategori silinemedi.");
                     }
-                    return new Result(ResultStatus.Error, "Kategori silinemedi.");
+                    return new Result(ResultStatus.Error, "Kategori bulunamadı.");
                 }
-                return new Result(ResultStatus.Error, "Kategori bulunamadı.");
+                return new Result(ResultStatus.Error, "Kategori-id bulunamadı.");
             }
             catch (Exception ex)
             {
@@ -75,54 +73,91 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<Category>> Get(int categoryId)
+        public async Task<IDataResult<CategoryDto>> Get(int categoryId)
         {
             try
             {
-                var category = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId, x => x.Articles);
-                if (category != null)
+                if (await _unitOfWork.Categories.AnyAsync(x => x.Id == categoryId))
                 {
-                    return new DataResult<Category>(ResultStatus.Success, category);
+                    var getCategory = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId, x => x.Articles);
+                    if (getCategory != null)
+                    {
+                        return new DataResult<CategoryDto>(ResultStatus.Success, new CategoryDto
+                        {
+                            Category = getCategory,
+                            ResultStatus = ResultStatus.Success
+                        });
+                    }
+                    return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori bulunamadı.", null);
                 }
-                return new DataResult<Category>(ResultStatus.Error, "Kategori bulunamadı.", null);
+                return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori-id bulunamadı.", null);
             }
             catch (Exception ex)
             {
-                return new DataResult<Category>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<CategoryDto>(ResultStatus.Error, "try-catch", null, ex);
             }
         }
 
-        public async Task<IDataResult<IList<Category>>> GetAll()
+        public async Task<IDataResult<CategoryListDto>> GetAll()
         {
             try
             {
                 var categories = await _unitOfWork.Categories.GetAllAsync(null, x => x.Articles);
                 if (categories.Count > 0)
                 {
-                    return new DataResult<IList<Category>>(ResultStatus.Success, categories);
+                    return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
+                    {
+                        Categories = categories,
+                        ResultStatus = ResultStatus.Success
+                    });
                 }
-                return new DataResult<IList<Category>>(ResultStatus.Error, "Kategori bulunamadı", null);
+                return new DataResult<CategoryListDto>(ResultStatus.Error, "Makale bulunamadı.", null);
             }
             catch (Exception ex)
             {
-                return new DataResult<IList<Category>>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<CategoryListDto>(ResultStatus.Error, "try-catch", null, ex);
             }
         }
 
-        public async Task<IDataResult<IList<Category>>> GetAllByNonDeleted()
+        public async Task<IDataResult<CategoryListDto>> GetAllByNonDeleted()
         {
             try
             {
                 var categories = await _unitOfWork.Categories.GetAllAsync(x => !x.IsDeleted, x => x.Articles);
                 if (categories.Count > 0)
                 {
-                    return new DataResult<IList<Category>>(ResultStatus.Success, categories);
+                    return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
+                    {
+                        Categories = categories,
+                        ResultStatus = ResultStatus.Success
+                    });
                 }
-                return new DataResult<IList<Category>>(ResultStatus.Error, "Kategori bulunamdı.", null);
+                return new DataResult<CategoryListDto>(ResultStatus.Error, "Kategori bulunamdı.", null);
             }
             catch (Exception ex)
             {
-                return new DataResult<IList<Category>>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<CategoryListDto>(ResultStatus.Error, "try-catch", null, ex);
+            }
+        }
+
+        public async Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAndActive()
+        {
+            try
+            {
+                var categories = await _unitOfWork.Categories.GetAllAsync(x => !x.IsDeleted && x.IsActive, x => x.Articles);
+                if (categories.Count > 0)
+                {
+                    return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
+                    {
+                        Categories = categories,
+                        ResultStatus = ResultStatus.Success
+                    });
+                }
+                return new DataResult<CategoryListDto>(ResultStatus.Error, "Kategori bulunamdı", null);
+            }
+            catch (Exception ex)
+            {
+                return new DataResult<CategoryListDto>(ResultStatus.Error, "try-catch", null, ex);
             }
         }
 
@@ -130,18 +165,22 @@ namespace PapaBlog.Services.Concrete
         {
             try
             {
-                var category = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId);
-                if (category != null)
+                if (await _unitOfWork.Categories.AnyAsync(x => x.Id == categoryId))
                 {
-                    await _unitOfWork.Categories.DeleteAsync(category);
-                    var result = await _unitOfWork.SaveAsync();
-                    if (result == 1)
+                    var category = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId);
+                    if (category != null)
                     {
-                        return new Result(ResultStatus.Success, $"{category.Name} kategorisi başarılı bir şekilde databaseden silindi.");
+                        await _unitOfWork.Categories.DeleteAsync(category);
+                        var result = await _unitOfWork.SaveAsync();
+                        if (result == 1)
+                        {
+                            return new Result(ResultStatus.Success, $"{category.Name} kategorisi başarılı bir şekilde databaseden silindi.");
+                        }
+                        return new Result(ResultStatus.Error, $"{category.Name} kategorisi databaseden silinemedi.");
                     }
-                    return new Result(ResultStatus.Error, $"{category.Name} kategorisi databaseden silinemedi.");
+                    return new Result(ResultStatus.Error, "Kategori bulunamadı.");
                 }
-                return new Result(ResultStatus.Error, "Kategori bulunamadı.");
+                return new Result(ResultStatus.Error, "Kategori-id bulunamadı.");
             }
             catch (Exception ex)
             {
@@ -153,16 +192,10 @@ namespace PapaBlog.Services.Concrete
         {
             try
             {
-                var category = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryUpdateDto.Id);
-                if (category != null)
+                if (await _unitOfWork.Categories.AnyAsync(x => x.Id == categoryUpdateDto.Id))
                 {
-                    category.Name = categoryUpdateDto.Name;
-                    category.Description = categoryUpdateDto.Description;
-                    category.Note = categoryUpdateDto.Note;
-                    category.IsActive = category.IsActive;
-                    category.IsDeleted = category.IsDeleted;
+                    var category = _mapper.Map<Category>(categoryUpdateDto);
                     category.ModifiedByName = modifiedByName;
-                    category.ModifiedDate = DateTime.Now;
                     await _unitOfWork.Categories.UpdateAsycn(category);
                     var result = await _unitOfWork.SaveAsync();
                     if (result == 1)
