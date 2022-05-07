@@ -85,13 +85,28 @@ namespace PapaBlog.Services.Concrete
                             ResultStatus = ResultStatus.Success
                         });
                     }
-                    return new DataResult<ArticleDto>(ResultStatus.Error, "Makale bulunamadı.", null);
+                    return new DataResult<ArticleDto>(ResultStatus.Error, "Makale bulunamadı.", new ArticleDto
+                    {
+                        ResultStatus = ResultStatus.Error,
+                        Message = "Makale bulunamadı.",
+                        Article = null
+                    });
                 }
-                return new DataResult<ArticleDto>(ResultStatus.Error, "Makale-id bulunamadı.", null);
+                return new DataResult<ArticleDto>(ResultStatus.Error, "Makale-id bulunamadı.", new ArticleDto
+                {
+                    ResultStatus = ResultStatus.Error,
+                    Message = "Makale-id bulınamadı.",
+                    Article = null
+                }, null);
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleDto>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<ArticleDto>(ResultStatus.Error, "try-catch", new ArticleDto
+                {
+                    ResultStatus = ResultStatus.Error,
+                    Message = "try-catch",
+                    Article = null
+                }, ex);
             }
         }
 
@@ -108,11 +123,21 @@ namespace PapaBlog.Services.Concrete
                         ResultStatus = ResultStatus.Success
                     });
                 }
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "Makale bulunamadı.", null);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, "Makale bulunamadı.", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "Makale bulunamadı.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "try-catch",
+                    ResultStatus = ResultStatus.Error
+                }, ex);
             }
         }
 
@@ -131,13 +156,28 @@ namespace PapaBlog.Services.Concrete
                             ResultStatus = ResultStatus.Success
                         });
                     }
-                    return new DataResult<ArticleListDto>(ResultStatus.Error, "Makale bulunamadı", null);
+                    return new DataResult<ArticleListDto>(ResultStatus.Error, "Makale bulunamadı", new ArticleListDto
+                    {
+                        Articles = null,
+                        Message = "Makale bulunamadı.",
+                        ResultStatus = ResultStatus.Error
+                    });
                 }
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "Kategori-id bulunamadı", null);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, "Kategori-id bulunamadı", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "Kategori - id bulunamadı",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "try-catch",
+                    ResultStatus = ResultStatus.Error
+                }, ex);
             }
         }
 
@@ -154,11 +194,21 @@ namespace PapaBlog.Services.Concrete
                         ResultStatus = ResultStatus.Success
                     });
                 }
-                return new DataResult<ArticleListDto>(ResultStatus.Success, "Makale bulunamadı.", null);
+                return new DataResult<ArticleListDto>(ResultStatus.Success, "Makale bulunamadı.", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "Makale bulunamadı.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "try-catch",
+                    ResultStatus = ResultStatus.Error
+                }, ex);
             }
         }
 
@@ -175,11 +225,21 @@ namespace PapaBlog.Services.Concrete
                         ResultStatus = ResultStatus.Success
                     });
                 }
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "Makale bulunamadı", null);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, "Makale bulunamadı", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "Makale bulunamadı.",
+                    ResultStatus = ResultStatus.Error
+                }, null);
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", null, ex);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                {
+                    Articles = null,
+                    Message = "try-catch",
+                    ResultStatus = ResultStatus.Error
+                }, ex);
             }
         }
 
