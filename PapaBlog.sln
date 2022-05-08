@@ -13,7 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.Shared", "PapaBlog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.MvcWebUI", "PapaBlog.MvcWebUI\PapaBlog.MvcWebUI.csproj", "{06BE00A5-8F84-47FB-8DFE-432924E0960C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PapaBlog.Dtos", "PapaBlog.Dtos\PapaBlog.Dtos.csproj", "{EFB8E06F-D039-4DB5-A78A-913F4E578E9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PapaBlog.Dtos", "PapaBlog.Dtos\PapaBlog.Dtos.csproj", "{EFB8E06F-D039-4DB5-A78A-913F4E578E9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F32CD665-30AC-4ACE-AA63-A9946F9B6B2B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

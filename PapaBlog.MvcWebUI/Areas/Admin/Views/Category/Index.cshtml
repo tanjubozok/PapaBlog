@@ -6,12 +6,9 @@
 }
 
 <div class="container-fluid">
-    <h1 class="mt-4">Kategoriler</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Kategori Listesi</li>
-    </ol>
     @if (Model.ResultStatus == ResultStatus.Success)
     {
+        <div id="modalPlaceHolder" aria-hidden="true"></div>
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
@@ -57,16 +54,16 @@
                                     <td>@item.Id</td>
                                     <td>@item.Name</td>
                                     <td>@item.Description</td>
-                                    <td>@item.IsDeleted</td>
                                     <td>@item.IsActive</td>
+                                    <td>@item.IsDeleted</td>
                                     <td>@item.Note</td>
                                     <td>@item.CreatedDate.ToShortDateString()</td>
                                     <td>@item.CreatedByName</td>
                                     <td>@item.ModifiedDate.ToShortDateString()</td>
                                     <td>@item.ModifiedByName</td>
                                     <td>
-                                        <a class="btn btn-warning btn-sm">Edit</a>
-                                        <a class="btn btn-danger btn-sm">Trash</a>
+                                        <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
+                                        <a class="btn btn-danger btn-sm"><span class="fas fa-trash"></span></a>
                                     </td>
                                 </tr>
                             }
@@ -78,7 +75,13 @@
     }
     else
     {
-
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>@Model.Message !</strong><br />
+            Anasayfaya dönmek için <a asp-area="Admin" asp-controller="Home" asp-action="Index">linki</a> tıklayınız.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
     }
 </div>
 
@@ -91,17 +94,21 @@
                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [
                 {
-                    text: 'Ekle',
+                    text: '<span class="fas fa-plus"></span> Ekle',
+                    attr: {
+                        id:'btnAdd'
+                    },
                     className:'btn btn-success',
                     action: function ( e, dt, node, config ) {
-                        alert( 'Ekle key press' );
                     }
                 },
                 {
-                    text: 'Yenile',
+                    text: '<span class="fas fa-list"></span> Yenile',
+                    attr: {
+                        id:'btnRefresh'
+                    },
                     className:'btn btn-info',
                     action: function ( e, dt, node, config ) {
-                        alert( 'Yenile key press' );
                     }
                 }
             ],
@@ -349,6 +356,56 @@
                     "renameTitle": "Görünüm İsmini Değiştir"
                 }
             }
+        });
+
+        /*addModal open*/
+        $(function () {
+            const url='@Url.Action("Add","Category")';
+            const placeHolderDiv = $('#modalPlaceHolder');
+            $('#btnAdd').click(function(){
+                $.get(url).done(function(data){
+                    placeHolderDiv.html(data);
+                    placeHolderDiv.find('.modal').modal('show');
+                });
+            });
+
+            placeHolderDiv.on('click','#btnSave', function(event){
+                event.preventDefault();
+                const form = $('#form-category-add');
+                const actionUrl = form.attr('action');
+                const dataToSend = form.serialize();
+                $.post(actionUrl, dataToSend).done(function(data){
+                    const categoryAddAjaxModel = jQuery.parseJSON(data);
+                    const newFormBody = $('.modal-body', categoryAddAjaxModel.CategoryAddPartial);
+                    placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                    const isValid = newFormBody.find('[name="IsValid"]').val()==='True';
+                    if(isValid){
+                        placeHolderDiv.find('.modal').modal('hide');
+                        const newTableRow = `
+                        <tr>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.Description}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.IsActive}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.IsDeleted}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.Note}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedDate}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedDate}</td>
+                            <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedByName}</td>
+                            <td>
+                                <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
+                                <a class="btn btn-danger btn-sm"><span class="fas fa-trash"></span></a>
+                            </td>
+                        </tr>`;
+                        const newTableRowObject = $(newTableRow);
+                        newTableRowObject.hide();
+                        $('#categoriesTable').append(newTableRowObject);
+                        newTableRowObject.fadeIn(3500);
+                        toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`,'Başarılı işlem!');
+                    }
+                });
+            });
         });
     } );
 </script>

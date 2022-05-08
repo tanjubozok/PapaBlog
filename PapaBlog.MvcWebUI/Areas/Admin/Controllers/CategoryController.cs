@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PapaBlog.Dtos.Concrete.CategoryDtos;
+using PapaBlog.MvcWebUI.Areas.Admin.Models;
 using PapaBlog.Services.Abstract;
+using PapaBlog.Shared.Utilities.Extensions;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
@@ -18,11 +22,35 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var result = await _categoryService.GetAll();
-            if (result.ResultStatus == ResultStatus.Success)
+            return View(result.Data);
+        }
+
+        public IActionResult Add()
+        {
+            return PartialView("_PartialAddCategory");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(CategoryAddDto categoryAddDto)
+        {
+            if (ModelState.IsValid)
             {
-                return View(result.Data);
+                var result = await _categoryService.Add(categoryAddDto, "System");
+                if (result.ResultStatus == ResultStatus.Success)
+                {
+                    var categoryAddAjaxViewModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel
+                    {
+                        CategoryDto = result.Data,
+                        CategoryAddPartial = await this.RenderViewToStringAsync("_PartialAddCategory", categoryAddDto)
+                    });
+                    return Json(categoryAddAjaxViewModel);
+                }
             }
-            return View();
+            var categoryAddErrorAjaxViewModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel
+            {
+                CategoryAddPartial = await this.RenderViewToStringAsync("_PartialAddCategory", categoryAddDto)
+            });
+            return Json(categoryAddErrorAjaxViewModel);
         }
     }
 }

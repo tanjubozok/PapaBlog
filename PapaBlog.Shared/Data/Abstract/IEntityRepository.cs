@@ -14,8 +14,8 @@ namespace PapaBlog.Shared.Data.Abstract
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
 
-        Task AddAsync(T entiny);
-        Task UpdateAsycn(T entity);
+        Task<T> AddAsync(T entiny);
+        Task<T> UpdateAsycn(T entity);
         Task DeleteAsync(T entity);
     }
 }

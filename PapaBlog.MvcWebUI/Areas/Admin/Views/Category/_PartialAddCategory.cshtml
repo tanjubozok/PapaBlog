@@ -1,0 +1,53 @@
+﻿@model CategoryAddDto
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span class="fas fa-plus"></span>
+                    Kategori Ekle
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="İptal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-area="Admin" asp-controller="Category" asp-action="Add" id="form-category-add">
+                    <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div asp-validation-summary="All" class="text-danger" id="validation-summary" aria-hidden="true" style="display:none;"></div>
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input type="text" class="form-control" asp-for="Name" placeholder="kategori adı">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <input type="text" class="form-control" asp-for="Description" placeholder="kategori açıklama">
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Note"></label>
+                        <input type="text" class="form-control" asp-for="Note" placeholder="kategori notu">
+                        <span asp-validation-for="Note" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive"></label>
+                        <span asp-validation-for="IsActive" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="fas fa-times"></span>
+                    Çıkış
+                </button>
+                <button type="button" class="btn btn-success" id="btnSave">
+                    <span class="fas fa-save"></span>
+                    Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

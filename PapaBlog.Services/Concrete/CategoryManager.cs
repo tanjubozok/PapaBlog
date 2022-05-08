@@ -22,24 +22,39 @@ namespace PapaBlog.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IResult> Add(CategoryAddDto categoryAddDto, string createByName)
+        public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createByName)
         {
             try
             {
                 var category = _mapper.Map<Category>(categoryAddDto);
                 category.ModifiedByName = createByName;
                 category.CreatedByName = createByName;
-                await _unitOfWork.Categories.AddAsync(category);
+                var addedCategory = await _unitOfWork.Categories.AddAsync(category);
                 var result = await _unitOfWork.SaveAsync();
                 if (result == 1)
                 {
-                    return new Result(ResultStatus.Success, $"{categoryAddDto.Name} kategorisi başarılı bir şekilde eklendi.");
+                    return new DataResult<CategoryDto>(ResultStatus.Success, $"{categoryAddDto.Name} kategorisi başarılı bir şekilde eklendi.", new CategoryDto
+                    {
+                        Category = addedCategory,
+                        Message = "Kategori başarıyla eklendi.",
+                        ResultStatus = ResultStatus.Success
+                    });
                 }
-                return new Result(ResultStatus.Error, "Kategori eklenemedi.");
+                return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori eklenemedi.", new CategoryDto
+                {
+                    Category = null,
+                    Message = "Kategori eklenemedi.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new DataResult<CategoryDto>(ResultStatus.TryCatch, "try-catch", new CategoryDto
+                {
+                    Category = null,
+                    Message = ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
+                }, ex);
             }
         }
 
@@ -69,7 +84,7 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new Result(ResultStatus.TryCatch, "try-catch", ex);
             }
         }
 
@@ -104,11 +119,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new DataResult<CategoryDto>(ResultStatus.Error, "try-catch", new CategoryDto
+                return new DataResult<CategoryDto>(ResultStatus.TryCatch, "try-catch", new CategoryDto
                 {
                     Category = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -135,11 +150,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new DataResult<CategoryListDto>(ResultStatus.Error, "try-catch", new CategoryListDto
+                return new DataResult<CategoryListDto>(ResultStatus.TryCatch, "try-catch", new CategoryListDto
                 {
                     Categories = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -160,17 +175,17 @@ namespace PapaBlog.Services.Concrete
                 return new DataResult<CategoryListDto>(ResultStatus.Error, "Kategori bulunamdı.", new CategoryListDto
                 {
                     Categories = null,
-                    ResultStatus = ResultStatus.Error,
-                    Message = "Kategori bulunamadı."
+                    Message = "Kategori bulunamadı.",
+                    ResultStatus = ResultStatus.Error
                 });
             }
             catch (Exception ex)
             {
-                return new DataResult<CategoryListDto>(ResultStatus.Error, "try-catch", new CategoryListDto
+                return new DataResult<CategoryListDto>(ResultStatus.TryCatch, "try-catch", new CategoryListDto
                 {
                     Categories = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -191,17 +206,17 @@ namespace PapaBlog.Services.Concrete
                 return new DataResult<CategoryListDto>(ResultStatus.Error, "Kategori bulunamdı", new CategoryListDto
                 {
                     Categories = null,
-                    ResultStatus = ResultStatus.Error,
-                    Message = "Kategori bulunamadı."
+                    Message = "Kategori bulunamadı.",
+                    ResultStatus = ResultStatus.Error
                 });
             }
             catch (Exception ex)
             {
-                return new DataResult<CategoryListDto>(ResultStatus.Error, "try-catch", new CategoryListDto
+                return new DataResult<CategoryListDto>(ResultStatus.TryCatch, "try-catch", new CategoryListDto
                 {
                     Categories = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -229,11 +244,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new Result(ResultStatus.TryCatch, "try-catch", ex);
             }
         }
 
-        public async Task<IResult> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
+        public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
         {
             try
             {
@@ -241,19 +256,39 @@ namespace PapaBlog.Services.Concrete
                 {
                     var category = _mapper.Map<Category>(categoryUpdateDto);
                     category.ModifiedByName = modifiedByName;
-                    await _unitOfWork.Categories.UpdateAsycn(category);
+                    var updadetCategory = await _unitOfWork.Categories.UpdateAsycn(category);
                     var result = await _unitOfWork.SaveAsync();
                     if (result == 1)
                     {
-                        return new Result(ResultStatus.Success, $"{categoryUpdateDto.Name} kategorisi başarılı bir şekilde güncellendi.");
+                        return new DataResult<CategoryDto>(ResultStatus.Success, $"{categoryUpdateDto.Name} kategorisi başarılı bir şekilde güncellendi.", new CategoryDto
+                        {
+                            Category = updadetCategory,
+                            Message = $"{categoryUpdateDto.Name} kategorisi başarılı bir şekilde güncellendi.",
+                            ResultStatus = ResultStatus.Success
+                        });
                     }
-                    return new Result(ResultStatus.Error, "Kategori güncellenemedi.");
+                    return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori güncellenemedi.", new CategoryDto
+                    {
+                        Category = null,
+                        Message = "Kategori güncellenemedi.",
+                        ResultStatus = ResultStatus.Error
+                    });
                 }
-                return new Result(ResultStatus.Error, "Kategori bulunamadı.");
+                return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori bulunamadı.", new CategoryDto
+                {
+                    Category = null,
+                    Message = "Kategori bulunamadı.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new DataResult<CategoryDto>(ResultStatus.TryCatch, "try-catch", new CategoryDto
+                {
+                    Category = null,
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
+                }, ex);
             }
         }
     }

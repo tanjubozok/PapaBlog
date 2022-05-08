@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PapaBlog.Services.AutoMapper.Profiles;
 using PapaBlog.Services.Extensions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PapaBlog.MvcWebUI
 {
@@ -11,7 +13,13 @@ namespace PapaBlog.MvcWebUI
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddJsonOptions(opt =>
+            {
+                opt.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                
+                opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
 
             services.AddAutoMapper(typeof(ArticleProfile), typeof(CategoryProfile));
 

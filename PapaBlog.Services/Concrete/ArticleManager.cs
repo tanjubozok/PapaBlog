@@ -22,7 +22,7 @@ namespace PapaBlog.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IResult> Add(ArticleAddDto articleAddDto, string createdByName)
+        public async Task<IDataResult<ArticleDto>> Add(ArticleAddDto articleAddDto, string createdByName)
         {
             try
             {
@@ -30,17 +30,32 @@ namespace PapaBlog.Services.Concrete
                 article.CreatedByName = createdByName;
                 article.ModifiedByName = createdByName;
                 article.UserId = 1;
-                await _unitOfWork.Articles.AddAsync(article);
+                var addedArticle = await _unitOfWork.Articles.AddAsync(article);
                 var result = await _unitOfWork.SaveAsync();
                 if (result == 1)
                 {
-                    return new Result(ResultStatus.Success, $"{articleAddDto.Title} makalesi başarılı bir şekilde eklendi.");
+                    return new DataResult<ArticleDto>(ResultStatus.Success, $"{articleAddDto.Title} makalesi başarılı bir şekilde eklendi.", new ArticleDto
+                    {
+                        Article = addedArticle,
+                        Message = "Makale başarıyla eklendi.",
+                        ResultStatus = ResultStatus.Success
+                    });
                 }
-                return new Result(ResultStatus.Error, "Makale eklenemedi.");
+                return new DataResult<ArticleDto>(ResultStatus.Error, "Makale eklenemedi.", new ArticleDto
+                {
+                    Article = null,
+                    Message = "Makale eklenemedi.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new DataResult<ArticleDto>(ResultStatus.TryCatch, "try-catch", new ArticleDto
+                {
+                    Article = null,
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
+                }, ex);
             }
         }
 
@@ -66,7 +81,7 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new Result(ResultStatus.TryCatch, "try-catch", ex);
             }
         }
 
@@ -87,25 +102,25 @@ namespace PapaBlog.Services.Concrete
                     }
                     return new DataResult<ArticleDto>(ResultStatus.Error, "Makale bulunamadı.", new ArticleDto
                     {
-                        ResultStatus = ResultStatus.Error,
+                        Article = null,
                         Message = "Makale bulunamadı.",
-                        Article = null
+                        ResultStatus = ResultStatus.Error
                     });
                 }
                 return new DataResult<ArticleDto>(ResultStatus.Error, "Makale-id bulunamadı.", new ArticleDto
                 {
-                    ResultStatus = ResultStatus.Error,
-                    Message = "Makale-id bulınamadı.",
-                    Article = null
+                    Article = null,
+                    Message = "Makale-id bulunamadı.",
+                    ResultStatus = ResultStatus.Error
                 }, null);
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleDto>(ResultStatus.Error, "try-catch", new ArticleDto
+                return new DataResult<ArticleDto>(ResultStatus.TryCatch, "try-catch", new ArticleDto
                 {
-                    ResultStatus = ResultStatus.Error,
-                    Message = "try-catch",
-                    Article = null
+                    Article = null,
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -132,11 +147,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                return new DataResult<ArticleListDto>(ResultStatus.TryCatch, "try-catch", new ArticleListDto
                 {
                     Articles = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -172,11 +187,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                return new DataResult<ArticleListDto>(ResultStatus.TryCatch, "try-catch", new ArticleListDto
                 {
                     Articles = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -203,11 +218,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                return new DataResult<ArticleListDto>(ResultStatus.TryCatch, "try-catch", new ArticleListDto
                 {
                     Articles = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -234,11 +249,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "try-catch", new ArticleListDto
+                return new DataResult<ArticleListDto>(ResultStatus.TryCatch, "try-catch", new ArticleListDto
                 {
                     Articles = null,
-                    Message = "try-catch",
-                    ResultStatus = ResultStatus.Error
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
                 }, ex);
             }
         }
@@ -262,11 +277,11 @@ namespace PapaBlog.Services.Concrete
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new Result(ResultStatus.TryCatch, "try-catch", ex);
             }
         }
 
-        public async Task<IResult> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName)
+        public async Task<IDataResult<ArticleDto>> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName)
         {
             try
             {
@@ -274,19 +289,38 @@ namespace PapaBlog.Services.Concrete
                 {
                     var article = _mapper.Map<Article>(articleUpdateDto);
                     article.ModifiedByName = modifiedByName;
-                    await _unitOfWork.Articles.UpdateAsycn(article);
+                    var updadetArticle = await _unitOfWork.Articles.UpdateAsycn(article);
                     var result = await _unitOfWork.SaveAsync();
                     if (result == 1)
                     {
-                        return new Result(ResultStatus.Success, $"{articleUpdateDto.Title} makalesi başarılı bir şekilde güncellendi.");
+                        return new DataResult<ArticleDto>(ResultStatus.Success, $"{articleUpdateDto.Title} makalesi başarılı bir şekilde güncellendi.", new ArticleDto
+                        {
+                            Article = updadetArticle,
+                            ResultStatus = ResultStatus.Success
+                        });
                     }
-                    return new Result(ResultStatus.Error, "Makale güncellenemedi.");
+                    return new DataResult<ArticleDto>(ResultStatus.Error, "Makale güncellenemedi.", new ArticleDto
+                    {
+                        Article = null,
+                        Message = "Makale güncellenemedi.",
+                        ResultStatus = ResultStatus.Error
+                    });
                 }
-                return new Result(ResultStatus.Error, "Makale-id bulunamadı.");
+                return new DataResult<ArticleDto>(ResultStatus.Error, "Makale-id bulunamadı.", new ArticleDto
+                {
+                    Article = null,
+                    Message = "Makale-id bulunamadı.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.Error, "try-catch", ex);
+                return new DataResult<ArticleDto>(ResultStatus.TryCatch, "try-catch", new ArticleDto
+                {
+                    Article = null,
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
+                }, ex);
             }
         }
     }

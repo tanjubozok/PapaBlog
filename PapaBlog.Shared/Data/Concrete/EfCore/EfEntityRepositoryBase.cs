@@ -19,9 +19,10 @@ namespace PapaBlog.Shared.Data.Concrete.EfCore
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(TEntity entiny)
+        public async Task<TEntity> AddAsync(TEntity entiny)
         {
             await _dbContext.Set<TEntity>().AddAsync(entiny);
+            return entiny;
         }
 
         public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
@@ -78,12 +79,13 @@ namespace PapaBlog.Shared.Data.Concrete.EfCore
             return await query.ToListAsync();
         }
 
-        public async Task UpdateAsycn(TEntity entity)
+        public async Task<TEntity> UpdateAsycn(TEntity entity)
         {
             await Task.Run(() =>
             {
                 _dbContext.Set<TEntity>().Update(entity);
             });
+            return entity;
         }
     }
 }
