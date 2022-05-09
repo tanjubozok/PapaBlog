@@ -13,7 +13,7 @@ namespace PapaBlog.Services.Abstract
         Task<IDataResult<ArticleListDto>> GetAllByCategory(int categoryId);
         Task<IDataResult<ArticleDto>> Add(ArticleAddDto articleAddDto, string createdByName);
         Task<IDataResult<ArticleDto>> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName);
-        Task<IResult> Delete(int articleId, string modifiedByName);
+        Task<IDataResult<ArticleDto>> Delete(int articleId, string modifiedByName);
         Task<IResult> HardDelete(int articleId);
     }
 }

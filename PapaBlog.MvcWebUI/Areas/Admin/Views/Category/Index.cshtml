@@ -32,7 +32,7 @@
                                 <th>Oluşturan Kullanıcı</th>
                                 <th>Düzenleme Tarihi</th>
                                 <th>Düzenleyen Kullanıcı</th>
-                                <th>İşlme</th>
+                                <th>İşlem</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -47,13 +47,13 @@
                                 <th>Oluşturan Kullanıcı</th>
                                 <th>Düzenleme Tarihi</th>
                                 <th>Düzenleyen Kullanıcı</th>
-                                <th>İşlme</th>
+                                <th>İşlem</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach (var item in Model.Categories)
                             {
-                                <tr>
+                                <tr name="@item.Id">
                                     <td>@item.Id</td>
                                     <td>@item.Name</td>
                                     <td>@item.Description</td>
@@ -66,7 +66,7 @@
                                     <td>@item.ModifiedByName</td>
                                     <td>
                                         <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
-                                        <a class="btn btn-danger btn-sm"><span class="fas fa-trash"></span></a>
+                                        <a class="btn btn-danger btn-sm btn-delete" data-id="@item.Id"><span class="fas fa-trash"></span></a>
                                     </td>
                                 </tr>
                             }
@@ -126,7 +126,7 @@
                                     let tableBody ='';
                                     $.each(categoryListDto.Categories.$values, function(index,category){
                                         tableBody+=`
-                                        <tr>
+                                        <tr name="${category.Id}">
                                             <td>${category.Id}</td>
                                             <td>${category.Name}</td>
                                             <td>${category.Description}</td>
@@ -139,18 +139,23 @@
                                             <td>${category.ModifiedByName}</td>
                                             <td>
                                                 <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
-                                                <a class="btn btn-danger btn-sm"><span class="fas fa-trash"></span></a>
-                                            </td>`;
+                                                <a class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-trash"></span></a>
+                                            </td>
+                                        </tr>`;
                                     });
                                     $('#categoriesTable > tbody').replaceWith(tableBody);
                                     $('.spinner-border').hide();
                                     $('#categoriesTable').fadeIn(1400);
                                 }else{
+                                    $('.spinner-border').hide();
+                                    $('#categoriesTable').fadeIn(1000);
                                     toastr.warning(`${categoryListDto.Message}`,'İşlem başarısız!');
                                 }
                             },
                             error:function(err){
-                                toastr.error(`${err.statusText}`,'İşlem başarısız!');
+                                $('.spinner-border').hide();
+                                $('#categoriesTable').fadeIn(100);
+                                toastr.error(`${err.responseText}`,'Hata!');
                             }
                         });
                     }
@@ -406,6 +411,8 @@
         $(function () {
             const url='@Url.Action("Add","Category")';
             const placeHolderDiv = $('#modalPlaceHolder');
+
+            /*ekleme*/
             $('#btnAdd').click(function(){
                 $.get(url).done(function(data){
                     placeHolderDiv.html(data);
@@ -413,6 +420,7 @@
                 });
             });
 
+            /*guncelleme*/
             placeHolderDiv.on('click','#btnSave', function(event){
                 event.preventDefault();
                 const form = $('#form-category-add');
@@ -426,7 +434,7 @@
                     if(isValid){
                         placeHolderDiv.find('.modal').modal('hide');
                         const newTableRow = `
-                        <tr>
+                        <tr name="${categoryAddAjaxModel.CategoryDto.Category.Id}">
                             <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
                             <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
                             <td>${categoryAddAjaxModel.CategoryDto.Category.Description}</td>
@@ -439,7 +447,7 @@
                             <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedByName}</td>
                             <td>
                                 <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
-                                <a class="btn btn-danger btn-sm"><span class="fas fa-trash"></span></a>
+                                <a class="btn btn-danger btn-sm btn-delete" data-id="${categoryAddAjaxModel.CategoryDto.Category.Id}"><span class="fas fa-trash"></span></a>
                             </td>
                         </tr>`;
                         const newTableRowObject = $(newTableRow);
@@ -457,9 +465,59 @@
                     }
                 });
             });
-
-
         });
-    } );
+
+        /*silme*/
+        $(document).on('click', '.btn-delete', function (event) {
+            event.preventDefault();
+            const id = $(this).data('id');
+            const tableRow = $(`[name=${id}]`);
+            const categoryName = tableRow.find('td:eq(1)').text();
+            Swal.fire({
+                title: 'Silmek istediğinize emin misiniz?',
+                text: `${categoryName} adlı kategori silinecektir!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet, silmek istiyorum',
+                cancelButtonText: 'Hayır, silmek istemiyorum'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'Post',
+                        dataType: 'json',
+                        data: {categoryId:id},
+                        url: '@Url.Action("Delete","Category")',
+                        success: function(data){
+                            const categoryDto = jQuery.parseJSON(data);
+                            if(categoryDto.ResultStatus===0){
+                                Swal.fire(
+                                    'Silindi!',
+                                    `${categoryDto.Category.Name} kategorisi başarılı bir şekilde silindi.`,
+                                    'success'
+                                );
+                                const tableRow = $(`[name="${id}"]`);
+                                tableRow.fadeOut(2000);
+                            }else{
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Başarısız işlem!',
+                                    text: `${categoryDto.Message}`
+                                });
+                            }
+                        },
+                        error: function(err){
+                            toastr.error(`${err.responseText}`,'Hata!');
+                            console.log();
+                        }
+                    });
+                }
+                else{
+                    toastr.warning('Silme işlemini iptal ettiniz.','İşlem başarısız!');
+                }
+            });
+        });
+    });
 </script>
 }

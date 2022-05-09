@@ -58,7 +58,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IResult> Delete(int categoryId, string modifiedByName)
+        public async Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName)
         {
             try
             {
@@ -70,21 +70,46 @@ namespace PapaBlog.Services.Concrete
                         category.IsDeleted = true;
                         category.ModifiedByName = modifiedByName;
                         category.ModifiedDate = DateTime.Now;
-                        await _unitOfWork.Categories.UpdateAsycn(category);
+                        var deletedCategory = await _unitOfWork.Categories.UpdateAsycn(category);
                         var result = await _unitOfWork.SaveAsync();
                         if (result == 1)
                         {
-                            return new Result(ResultStatus.Success, $"{category.Name} kategorisi başarılı bir şekilde silindi.");
+                            return new DataResult<CategoryDto>(ResultStatus.Success, $"{category.Name} kategorisi başarılı bir şekilde silindi.", new CategoryDto
+                            {
+                                Category = category,
+                                Message = $"{category.Name} kategorisi başarılı bir şekilde silindi.",
+                                ResultStatus = ResultStatus.Success
+                            });
                         }
-                        return new Result(ResultStatus.Error, "Kategori silinemedi.");
+                        return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori silinemedi.", new CategoryDto
+                        {
+                            Category = null,
+                            Message = "Kategori silinemdi",
+                            ResultStatus = ResultStatus.Error
+                        });
                     }
-                    return new Result(ResultStatus.Error, "Kategori bulunamadı.");
+                    return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori bulunamadı.", new CategoryDto
+                    {
+                        Category = null,
+                        Message = "Kategori bulunamadı.",
+                        ResultStatus = ResultStatus.Error
+                    });
                 }
-                return new Result(ResultStatus.Error, "Kategori-id bulunamadı.");
+                return new DataResult<CategoryDto>(ResultStatus.Error, "Kategori-id bulunamadı.", new CategoryDto
+                {
+                    Category = null,
+                    Message = "Kategori-id bulunamadı.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.TryCatch, "try-catch", ex);
+                return new DataResult<CategoryDto>(ResultStatus.TryCatch, "try-catch", new CategoryDto
+                {
+                    Category = null,
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
+                }, ex);
             }
         }
 

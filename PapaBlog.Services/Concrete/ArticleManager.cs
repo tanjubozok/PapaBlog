@@ -59,7 +59,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IResult> Delete(int articleId, string modifiedByName)
+        public async Task<IDataResult<ArticleDto>> Delete(int articleId, string modifiedByName)
         {
             try
             {
@@ -69,19 +69,39 @@ namespace PapaBlog.Services.Concrete
                     deleteArticle.IsDeleted = true;
                     deleteArticle.ModifiedByName = modifiedByName;
                     deleteArticle.ModifiedDate = DateTime.Now;
-                    await _unitOfWork.Articles.UpdateAsycn(deleteArticle);
+                    var deletedArticle = await _unitOfWork.Articles.UpdateAsycn(deleteArticle);
                     var result = await _unitOfWork.SaveAsync();
                     if (result == 1)
                     {
-                        return new Result(ResultStatus.Success, $"{deleteArticle.Title} makalesi başarılı bir şekilde silindi.");
+                        return new DataResult<ArticleDto>(ResultStatus.Success, $"{deleteArticle.Title} makalesi başarılı bir şekilde silindi.", new ArticleDto
+                        {
+                            Article = deletedArticle,
+                            Message = $"{deletedArticle.Title} makalesi başarılı bir şekilde silindi.",
+                            ResultStatus = ResultStatus.Success
+                        });
                     }
-                    return new Result(ResultStatus.Error, "Makale silinemedi.");
+                    return new DataResult<ArticleDto>(ResultStatus.Error, "Makale silinemedi.", new ArticleDto
+                    {
+                        Article = null,
+                        Message = "Makale silinemedi",
+                        ResultStatus = ResultStatus.Error
+                    });
                 }
-                return new Result(ResultStatus.Error, "Makale-id bulunamadı.");
+                return new DataResult<ArticleDto>(ResultStatus.Error, "Makale-id bulunamadı.", new ArticleDto
+                {
+                    Article = null,
+                    Message = "Makale-id bulunamadı.",
+                    ResultStatus = ResultStatus.Error
+                });
             }
             catch (Exception ex)
             {
-                return new Result(ResultStatus.TryCatch, "try-catch", ex);
+                return new DataResult<ArticleDto>(ResultStatus.TryCatch, "try-catch", new ArticleDto
+                {
+                    Article = null,
+                    Message = "try-catch : " + ex.Message,
+                    ResultStatus = ResultStatus.TryCatch
+                }, ex);
             }
         }
 
