@@ -5,6 +5,7 @@ using PapaBlog.Services.Abstract;
 using PapaBlog.Shared.Utilities.Extensions;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
@@ -51,6 +52,16 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                 CategoryAddPartial = await this.RenderViewToStringAsync("_PartialAddCategory", categoryAddDto)
             });
             return Json(categoryAddErrorAjaxViewModel);
+        }
+
+        public async Task<JsonResult> GetAllCategories()
+        {
+            var result = await _categoryService.GetAll();
+            var categories = JsonSerializer.Serialize(result.Data, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+            return Json(categories);
         }
     }
 }

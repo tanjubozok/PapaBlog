@@ -16,6 +16,9 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
+                    <div class="spinner-border text-primary" role="status" style="display:none;">
+                        <span class="sr-only">Yükleniyor...</span>
+                    </div>
                     <table class="table table-bordered" id="categoriesTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
@@ -57,9 +60,9 @@
                                     <td>@item.IsActive</td>
                                     <td>@item.IsDeleted</td>
                                     <td>@item.Note</td>
-                                    <td>@item.CreatedDate.ToShortDateString()</td>
+                                    <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
                                     <td>@item.CreatedByName</td>
-                                    <td>@item.ModifiedDate.ToShortDateString()</td>
+                                    <td>@item.ModifiedDate.ToString("dd.MM.yyyy")</td>
                                     <td>@item.ModifiedByName</td>
                                     <td>
                                         <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
@@ -109,6 +112,47 @@
                     },
                     className:'btn btn-info',
                     action: function ( e, dt, node, config ) {
+                        $.ajax({
+                            type:'Get',
+                            url:'@Url.Action("GetAllCategories","Category")',
+                            contentType:"application/json",
+                            beforeSend:function(){
+                                $('#categoriesTable').hide();
+                                $('.spinner-border').show()
+                            },
+                            success:function(data){
+                                const categoryListDto = jQuery.parseJSON(data);
+                                if(categoryListDto.ResultStatus===0){
+                                    let tableBody ='';
+                                    $.each(categoryListDto.Categories.$values, function(index,category){
+                                        tableBody+=`
+                                        <tr>
+                                            <td>${category.Id}</td>
+                                            <td>${category.Name}</td>
+                                            <td>${category.Description}</td>
+                                            <td>${convertFirstLetterToUpperCase(category.IsActive.toString())}</td>
+                                            <td>${convertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
+                                            <td>${category.Note}</td>
+                                            <td>${convertToShortDate(category.CreatedDate)}</td>
+                                            <td>${category.CreatedByName}</td>
+                                            <td>${convertToShortDate(category.ModifiedDate)}</td>
+                                            <td>${category.ModifiedByName}</td>
+                                            <td>
+                                                <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
+                                                <a class="btn btn-danger btn-sm"><span class="fas fa-trash"></span></a>
+                                            </td>`;
+                                    });
+                                    $('#categoriesTable > tbody').replaceWith(tableBody);
+                                    $('.spinner-border').hide();
+                                    $('#categoriesTable').fadeIn(1400);
+                                }else{
+                                    toastr.warning(`${categoryListDto.Message}`,'İşlem başarısız!');
+                                }
+                            },
+                            error:function(err){
+                                toastr.error(`${err.statusText}`,'İşlem başarısız!');
+                            }
+                        });
                     }
                 }
             ],
@@ -386,12 +430,12 @@
                             <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
                             <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
                             <td>${categoryAddAjaxModel.CategoryDto.Category.Description}</td>
-                            <td>${categoryAddAjaxModel.CategoryDto.Category.IsActive}</td>
-                            <td>${categoryAddAjaxModel.CategoryDto.Category.IsDeleted}</td>
+                            <td>${convertFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsActive.toString())}</td>
+                            <td>${convertFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsDeleted.toString())}</td>
                             <td>${categoryAddAjaxModel.CategoryDto.Category.Note}</td>
-                            <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedDate}</td>
+                            <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.CreatedDate)}</td>
                             <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
-                            <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedDate}</td>
+                            <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
                             <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedByName}</td>
                             <td>
                                 <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
@@ -401,11 +445,20 @@
                         const newTableRowObject = $(newTableRow);
                         newTableRowObject.hide();
                         $('#categoriesTable').append(newTableRowObject);
-                        newTableRowObject.fadeIn(3500);
+                        newTableRowObject.fadeIn(3000);
                         toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`,'Başarılı işlem!');
+                    }else{
+                        let summaryText = '';
+                        $('#validation-summary > ul > li').each(function(){
+                            let text = $(this).text();
+                            summaryText = `* ${text}\n`;
+                        });
+                        toastr.warning(summaryText);
                     }
                 });
             });
+
+
         });
     } );
 </script>
