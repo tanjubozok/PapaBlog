@@ -13,6 +13,7 @@ namespace PapaBlog.Services.AutoMapper.Profiles
                 .ForMember(x => x.CreatedDate, opt => opt.MapFrom(x => DateTime.Now));
             CreateMap<CategoryUpdateDto, Category>()
                 .ForMember(x => x.ModifiedDate, opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<Category, CategoryUpdateDto>();
         }
     }
 }

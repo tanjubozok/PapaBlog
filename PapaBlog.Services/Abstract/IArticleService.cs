@@ -7,6 +7,7 @@ namespace PapaBlog.Services.Abstract
     public interface IArticleService
     {
         Task<IDataResult<ArticleDto>> Get(int articleId);
+        Task<IDataResult<ArticleUpdateDto>> GetArticleUpdateDto(int articltId);
         Task<IDataResult<ArticleListDto>> GetAll();
         Task<IDataResult<ArticleListDto>> GetAllByNonDeleted();
         Task<IDataResult<ArticleListDto>> GetAllByNonDeletedAndActive();

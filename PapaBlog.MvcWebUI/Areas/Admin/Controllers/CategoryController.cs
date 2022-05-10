@@ -54,6 +54,39 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return Json(categoryAddErrorAjaxViewModel);
         }
 
+        public async Task<IActionResult> Update(int categoryId)
+        {
+            var result = await _categoryService.GetCategoryUpdateDto(categoryId);
+            if (result.ResultStatus == ResultStatus.Success)
+            {
+                return PartialView("_PartialUpdateCategory", result.Data);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _categoryService.Update(categoryUpdateDto, "System");
+                if (result.ResultStatus == ResultStatus.Success)
+                {
+                    var categoryUpdateAjaxViewModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
+                    {
+                        CategoryDto = result.Data,
+                        CategoryUpdatePartial = await this.RenderViewToStringAsync("_PartialUpdateCategory", categoryUpdateDto)
+                    });
+                    return Json(categoryUpdateAjaxViewModel);
+                }
+            }
+            var categoryUpdateErrorAjaxViewModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
+            {
+                CategoryUpdatePartial = await this.RenderViewToStringAsync("_PartialUpdateCategory", categoryUpdateDto)
+            });
+            return Json(categoryUpdateErrorAjaxViewModel);
+        }
+
         public async Task<JsonResult> GetAllCategories()
         {
             var result = await _categoryService.GetAllByNonDeleted();

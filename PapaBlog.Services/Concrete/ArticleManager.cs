@@ -278,6 +278,24 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
+        public async Task<IDataResult<ArticleUpdateDto>> GetArticleUpdateDto(int articltId)
+        {
+            try
+            {
+                if (await _unitOfWork.Articles.AnyAsync(x => x.Id == articltId))
+                {
+                    var article = await _unitOfWork.Articles.GetAsync(x => x.Id == articltId);
+                    var articleDtoUpdate = _mapper.Map<ArticleUpdateDto>(article);
+                    return new DataResult<ArticleUpdateDto>(ResultStatus.Success, articleDtoUpdate);
+                }
+                return new DataResult<ArticleUpdateDto>(ResultStatus.Error, "Makale-id bulunamadı", null);
+            }
+            catch (Exception ex)
+            {
+                return new DataResult<ArticleUpdateDto>(ResultStatus.TryCatch, "try-catch", null, ex);
+            }
+        }
+
         public async Task<IResult> HardDelete(int articleId)
         {
             try

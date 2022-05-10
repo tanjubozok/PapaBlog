@@ -8,6 +8,7 @@ using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using PapaBlog.Shared.Utilities.Results.Concrete;
 using System;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PapaBlog.Services.Concrete
 {
@@ -246,6 +247,24 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
+        public async Task<IDataResult<CategoryUpdateDto>> GetCategoryUpdateDto(int categoryId)
+        {
+            try
+            {
+                if (await _unitOfWork.Categories.AnyAsync(x => x.Id == categoryId))
+                {
+                    var category = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId);
+                    var categoryUpdateDto = _mapper.Map<CategoryUpdateDto>(category);
+                    return new DataResult<CategoryUpdateDto>(ResultStatus.Success, categoryUpdateDto);
+                }
+                return new DataResult<CategoryUpdateDto>(ResultStatus.Error, "Kategori bulunamadı.", null);
+            }
+            catch (Exception ex)
+            {
+                return new DataResult<CategoryUpdateDto>(ResultStatus.TryCatch, "try-catch", null, ex);
+            }
+        }
+
         public async Task<IResult> HardDelete(int categoryId)
         {
             try
@@ -279,16 +298,17 @@ namespace PapaBlog.Services.Concrete
             {
                 if (await _unitOfWork.Categories.AnyAsync(x => x.Id == categoryUpdateDto.Id))
                 {
-                    var category = _mapper.Map<Category>(categoryUpdateDto);
+                    var oldCategory = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryUpdateDto.Id);
+                    var category = _mapper.Map<CategoryUpdateDto, Category>(categoryUpdateDto, oldCategory);
                     category.ModifiedByName = modifiedByName;
                     var updadetCategory = await _unitOfWork.Categories.UpdateAsycn(category);
                     var result = await _unitOfWork.SaveAsync();
                     if (result == 1)
                     {
-                        return new DataResult<CategoryDto>(ResultStatus.Success, $"{categoryUpdateDto.Name} kategorisi başarılı bir şekilde güncellendi.", new CategoryDto
+                        return new DataResult<CategoryDto>(ResultStatus.Success, $"{updadetCategory.Name} kategorisi başarılı bir şekilde güncellendi.", new CategoryDto
                         {
                             Category = updadetCategory,
-                            Message = $"{categoryUpdateDto.Name} kategorisi başarılı bir şekilde güncellendi.",
+                            Message = $"{updadetCategory.Name} kategorisi başarılı bir şekilde güncellendi.",
                             ResultStatus = ResultStatus.Success
                         });
                     }

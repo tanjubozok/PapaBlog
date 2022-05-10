@@ -65,7 +65,7 @@
                                     <td>@item.ModifiedDate.ToString("dd.MM.yyyy")</td>
                                     <td>@item.ModifiedByName</td>
                                     <td>
-                                        <a class="btn btn-warning btn-sm"><span class="fas fa-edit"></span></a>
+                                        <a class="btn btn-warning btn-sm btn-update" data-id="@item.Id"><span class="fas fa-edit"></span></a>
                                         <a class="btn btn-danger btn-sm btn-delete" data-id="@item.Id"><span class="fas fa-trash"></span></a>
                                     </td>
                                 </tr>
@@ -89,5 +89,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/js/categoryIndex.js"></script>
+<script src="~/js/categoryIndex.js"></script>
 }

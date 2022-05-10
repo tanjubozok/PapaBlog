@@ -1,20 +1,21 @@
-﻿@model CategoryAddDto
+﻿@model CategoryUpdateDto
 
 <div class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <span class="fas fa-plus"></span>
-                    Kategori Ekle
+                    <span class="fas fa-edit"></span>
+                    @Model.Name adlı kategori düzenleniyor...
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="İptal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form asp-area="Admin" asp-controller="Category" asp-action="Add" id="form-category-add">
+                <form asp-area="Admin" asp-controller="Category" asp-action="Update" id="form-category-update">
                     <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input type="hidden" asp-for="Id" />
                     <div asp-validation-summary="All" class="text-danger" id="validation-summary" aria-hidden="true" style="display:none;"></div>
                     <div class="form-group">
                         <label asp-for="Name"></label>
@@ -36,6 +37,11 @@
                         <label asp-for="IsActive" class="form-check-label"></label>
                         <span asp-validation-for="IsActive" class="text-danger"></span>
                     </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" asp-for="IsDeleted" class="form-check-input">
+                        <label asp-for="IsDeleted" class="form-check-label"></label>
+                        <span asp-validation-for="IsDeleted" class="text-danger"></span>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -43,9 +49,9 @@
                     <span class="fas fa-times"></span>
                     Çıkış
                 </button>
-                <button type="button" class="btn btn-success" id="btnSave">
-                    <span class="fas fa-save"></span>
-                    Kaydet
+                <button type="button" class="btn btn-warning" id="btnUpdate">
+                    <span class="fas fa-edit"></span>
+                    Güncelle
                 </button>
             </div>
         </div>
