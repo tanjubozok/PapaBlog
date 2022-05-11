@@ -417,7 +417,6 @@
                     },
                     error: function (err) {
                         toastr.error(`${err.responseText}`, 'Hata!');
-                        console.log();
                     }
                 });
             }
@@ -457,7 +456,6 @@
                 const dataToSend = form.serialize();
                 $.post(actionUrl, dataToSend).done(function (data) {
                     const categoryUpdateAjaxModel = jQuery.parseJSON(data);
-                    console.log(categoryUpdateAjaxModel);
                     const newFormBody = $('.modal-body', categoryUpdateAjaxModel.CategoryUpdatePartial);
                     placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                     const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
@@ -495,7 +493,8 @@
                         toastr.warning(summaryText);
                     }
                 }).fail(function (response) {
-                    console.log(response);
+                    console.log(response.responseText);
+                    toString.error(response.responseText);
                 });
             });
     });

@@ -12,8 +12,6 @@ namespace PapaBlog.Data.Concrete
         private EfArticleRepository _efArticleRepository;
         private EfCategoryRepository _efCategoryRepository;
         private EfCommentRepository _efCommentRepository;
-        private EfRoleRepository _efRoleRepository;
-        private EfUserRepository _efUserRepository;
 
         public UnitOfWork(PapaBlogContext dbContext)
         {
@@ -23,8 +21,6 @@ namespace PapaBlog.Data.Concrete
         public IArticleRepository Articles => _efArticleRepository ?? new EfArticleRepository(_dbContext);
         public ICategoryRepository Categories => _efCategoryRepository ?? new EfCategoryRepository(_dbContext);
         public ICommentRepository Comments => _efCommentRepository ?? new EfCommentRepository(_dbContext);
-        public IUserRepository Users => _efUserRepository ?? new EfUserRepository(_dbContext);
-        public IRoleRepository Roles => _efRoleRepository ?? new EfRoleRepository(_dbContext);
 
         public async Task<int> SaveAsync()
         {

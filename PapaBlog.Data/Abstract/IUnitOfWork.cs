@@ -11,9 +11,6 @@ namespace PapaBlog.Data.Abstract
         IArticleRepository Articles { get; }
         ICategoryRepository Categories { get; }
         ICommentRepository Comments { get; }
-        IUserRepository Users { get; }
-        IRoleRepository Roles { get; }
-
         Task<int> SaveAsync();
     }
 }

@@ -17,7 +17,7 @@ namespace PapaBlog.MvcWebUI
             {
                 opt.JsonSerializerOptions.Converters.Add(
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-                
+
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             });
 

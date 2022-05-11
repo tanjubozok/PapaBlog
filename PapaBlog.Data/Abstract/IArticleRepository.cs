@@ -5,6 +5,6 @@ namespace PapaBlog.Data.Abstract
 {
     public interface IArticleRepository : IEntityRepository<Article>
     {
-        
+
     }
 }

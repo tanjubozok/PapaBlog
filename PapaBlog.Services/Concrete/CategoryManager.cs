@@ -8,7 +8,6 @@ using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using PapaBlog.Shared.Utilities.Results.Concrete;
 using System;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace PapaBlog.Services.Concrete
 {

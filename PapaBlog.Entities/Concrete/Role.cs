@@ -1,12 +1,9 @@
-﻿using PapaBlog.Shared.Entities.Abstract;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace PapaBlog.Entities.Concrete
 {
-    public class Role : EntityBase, IEntity
+    public class Role : IdentityRole<int>
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public ICollection<User> Users { get; set; }
+
     }
 }
