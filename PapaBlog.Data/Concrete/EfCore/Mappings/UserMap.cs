@@ -8,6 +8,27 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.Property(x => x.Picture).IsRequired();
+            builder.Property(x => x.Picture).HasMaxLength(250);
+
+            builder.HasKey(u => u.Id);
+
+            builder.HasIndex(u => u.NormalizedUserName).HasDatabaseName("UserNameIndex").IsUnique();
+            builder.HasIndex(u => u.NormalizedEmail).HasDatabaseName("EmailIndex");
+
+            builder.ToTable("AspNetUsers");
+
+            builder.Property(u => u.ConcurrencyStamp).IsConcurrencyToken();
+
+            builder.Property(u => u.UserName).HasMaxLength(50);
+            builder.Property(u => u.NormalizedUserName).HasMaxLength(50);
+            builder.Property(u => u.Email).HasMaxLength(100);
+            builder.Property(u => u.NormalizedEmail).HasMaxLength(100);
+
+            builder.HasMany<UserClaim>().WithOne().HasForeignKey(uc => uc.UserId).IsRequired();
+            builder.HasMany<UserLogin>().WithOne().HasForeignKey(ul => ul.UserId).IsRequired();
+            builder.HasMany<UserToken>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+            builder.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
         }
     }
 }

@@ -1,69 +1,55 @@
-﻿@model CategoryListDto
+﻿@model UserListDto
 
 @{
     Layout = "_Layout";
-    ViewBag.Title = "Kategoriler";
+    ViewBag.Title = "Kullanıcılar";
 }
 
 <div class="container-fluid">
     @if (Model.ResultStatus == ResultStatus.Success)
     {
         <div id="modalPlaceHolder" aria-hidden="true"></div>
+
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Kategori Listesi
+                Kullanıcı Listesi
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <div class="spinner-border text-primary" role="status" style="display:none;">
                         <span class="sr-only">Yükleniyor...</span>
                     </div>
-                    <table class="table table-bordered table-striped table-hover" id="categoriesTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-striped table-hover" id="usersTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Adı</th>
-                                <th>Açıklama</th>
-                                <th>Aktif Mi</th>
-                                <th>Silinmiş Mi</th>
-                                <th>Not</th>
-                                <th>Oluşturma Tarihi</th>
-                                <th>Oluşturan Kullanıcı</th>
-                                <th>Düzenleme Tarihi</th>
-                                <th>Düzenleyen Kullanıcı</th>
+                                <th>Kullanıcı Adı</th>
+                                <th>E-posta Adresi</th>
+                                <th>Telefon Numarası</th>
+                                <th>Resim</th>
                                 <th>İşlem</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>ID</th>
-                                <th>Adı</th>
-                                <th>Açıklama</th>
-                                <th>Aktif Mi</th>
-                                <th>Silinmiş Mi</th>
-                                <th>Not</th>
-                                <th>Oluşturma Tarihi</th>
-                                <th>Oluşturan Kullanıcı</th>
-                                <th>Düzenleme Tarihi</th>
-                                <th>Düzenleyen Kullanıcı</th>
+                                <th>Kullanıcı Adı</th>
+                                <th>E-posta Adresi</th>
+                                <th>Telefon Numarası</th>
+                                <th>Resim</th>
                                 <th>İşlem</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach (var item in Model.Categories)
+                            @foreach (var item in Model.Users)
                             {
                                 <tr name="@item.Id">
                                     <td>@item.Id</td>
-                                    <td>@item.Name</td>
-                                    <td>@item.Description</td>
-                                    <td>@item.IsActive</td>
-                                    <td>@item.IsDeleted</td>
-                                    <td>@item.Note</td>
-                                    <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
-                                    <td>@item.CreatedByName</td>
-                                    <td>@item.ModifiedDate.ToString("dd.MM.yyyy")</td>
-                                    <td>@item.ModifiedByName</td>
+                                    <td>@item.UserName</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.PhoneNumber</td>
+                                    <td><img src="~/img/@item.Picture" alt="@item.UserName" style="max-height:32px;max-width:32px;"></td>
                                     <td>
                                         <a class="btn btn-warning btn-sm btn-update" data-id="@item.Id"><span class="fas fa-edit"></span></a>
                                         <a class="btn btn-danger btn-sm btn-delete" data-id="@item.Id"><span class="fas fa-trash"></span></a>
@@ -89,5 +75,5 @@
 </div>
 
 @section Scripts{
-<script src="~/js/jsControllerModels/categoryIndex.js"></script>
+    <script src="~/js/jsControllerModels/userIndex.js"></script>
 }

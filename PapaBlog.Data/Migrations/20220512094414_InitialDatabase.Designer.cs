@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PapaBlog.Data.Concrete.EfCore.Contexts;
 
 namespace PapaBlog.Data.Migrations
 {
     [DbContext(typeof(PapaBlogContext))]
-    partial class PapaBlogContextModelSnapshot : ModelSnapshot
+    [Migration("20220512094414_InitialDatabase")]
+    partial class InitialDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

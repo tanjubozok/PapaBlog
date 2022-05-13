@@ -1,0 +1,58 @@
+﻿@model UserAddDto
+
+<div class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span class="fas fa-plus"></span>
+                    Kullanıcı Ekle
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="İptal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-area="Admin" asp-controller="User" asp-action="Add" id="form-user-add">
+                    <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div asp-validation-summary="All" class="text-danger" id="validation-summary" aria-hidden="true" style="display:none;"></div>
+                    <div class="form-group">
+                        <label asp-for="UserName"></label>
+                        <input type="text" asp-for="UserName" class="form-control" placeholder="kullanıcı adı">
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input type="email" asp-for="Email" class="form-control" placeholder="e-posta adresi">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password"></label>
+                        <input type="password" asp-for="Password" class="form-control" placeholder="şifre">
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber"></label>
+                        <input type="tel" asp-for="PhoneNumber" class="form-control" placeholder="telefon numarası">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PictureFile"></label>
+                        <input type="file" accept="images/*" asp-for="PictureFile" class="form-control-file" placeholder="profil resmi">
+                        <span asp-validation-for="PictureFile" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="fas fa-times"></span>
+                    Çıkış
+                </button>
+                <button type="button" class="btn btn-success" id="btnSave">
+                    <span class="fas fa-save"></span>
+                    Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

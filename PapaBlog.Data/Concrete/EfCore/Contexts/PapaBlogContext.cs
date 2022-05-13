@@ -5,7 +5,7 @@ using PapaBlog.Entities.Concrete;
 
 namespace PapaBlog.Data.Concrete.EfCore.Contexts
 {
-    public class PapaBlogContext : IdentityDbContext<User, Role, int>
+    public class PapaBlogContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
         public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -21,8 +21,13 @@ namespace PapaBlog.Data.Concrete.EfCore.Contexts
             modelBuilder.ApplyConfiguration(new ArticleMap());
             modelBuilder.ApplyConfiguration(new CategoryMap());
             modelBuilder.ApplyConfiguration(new CommentMap());
-            modelBuilder.ApplyConfiguration(new RoleMap());
             modelBuilder.ApplyConfiguration(new UserMap());
+            modelBuilder.ApplyConfiguration(new RoleMap());
+            modelBuilder.ApplyConfiguration(new RoleClaimMap());
+            modelBuilder.ApplyConfiguration(new UserClaimMap());
+            modelBuilder.ApplyConfiguration(new UserLoginMap());
+            modelBuilder.ApplyConfiguration(new UserRoleMap());
+            modelBuilder.ApplyConfiguration(new UserTokenMap());
         }
     }
 }

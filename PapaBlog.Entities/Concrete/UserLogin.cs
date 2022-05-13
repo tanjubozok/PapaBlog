@@ -2,7 +2,7 @@
 
 namespace PapaBlog.Entities.Concrete
 {
-    public class Role : IdentityRole<int>
+    public class UserLogin : IdentityUserLogin<int>
     {
     }
 }

@@ -321,7 +321,8 @@
         const placeHolderDiv = $('#modalPlaceHolder');
 
         /*ekleme*/
-        $('#btnAdd').click(function () {
+        $('#btnAdd').click(function (event) {
+            event.preventDefault();
             $.get(url).done(function (data) {
                 placeHolderDiv.html(data);
                 placeHolderDiv.find('.modal').modal('show');
@@ -364,12 +365,14 @@
                     newTableRowObject.fadeIn(3000);
                     toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`, 'Başarılı işlem!');
                 } else {
-                    let summaryText = '';
+                    let summaryText = [];
                     $('#validation-summary > ul > li').each(function () {
                         let text = $(this).text();
-                        summaryText = `* ${text}\n`;
+                        summaryText.push(`*${text}`);
                     });
-                    toastr.warning(summaryText);
+                    summaryText.forEach((element) => {
+                        toastr.warning(element);
+                    });
                 }
             });
         });
@@ -446,22 +449,19 @@
         });
 
         /* guncelleme set */
-        placeHolderDiv.on('click',
-            '#btnUpdate',
-            function (event) {
-                event.preventDefault();
-
-                const form = $('#form-category-update');
-                const actionUrl = form.attr('action');
-                const dataToSend = form.serialize();
-                $.post(actionUrl, dataToSend).done(function (data) {
-                    const categoryUpdateAjaxModel = jQuery.parseJSON(data);
-                    const newFormBody = $('.modal-body', categoryUpdateAjaxModel.CategoryUpdatePartial);
-                    placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
-                    const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
-                    if (isValid) {
-                        placeHolderDiv.find('.modal').modal('hide');
-                        const newTableRow = `
+        placeHolderDiv.on('click', '#btnUpdate', function (event) {
+            event.preventDefault();
+            const form = $('#form-category-update');
+            const actionUrl = form.attr('action');
+            const dataToSend = form.serialize();
+            $.post(actionUrl, dataToSend).done(function (data) {
+                const categoryUpdateAjaxModel = jQuery.parseJSON(data);
+                const newFormBody = $('.modal-body', categoryUpdateAjaxModel.CategoryUpdatePartial);
+                placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
+                if (isValid) {
+                    placeHolderDiv.find('.modal').modal('hide');
+                    const newTableRow = `
                                 <tr name="${categoryUpdateAjaxModel.CategoryDto.Category.Id}">
                                     <td>${categoryUpdateAjaxModel.CategoryDto.Category.Id}</td>
                                     <td>${categoryUpdateAjaxModel.CategoryDto.Category.Name}</td>
@@ -478,24 +478,26 @@
                                         <button class="btn btn-danger btn-sm btn-delete" data-id="${categoryUpdateAjaxModel.CategoryDto.Category.Id}"><span class="fas fa-trash"></span></button>
                                     </td>
                                 </tr>`;
-                        const newTableRowObject = $(newTableRow);
-                        const categoryTableRow = $(`[name="${categoryUpdateAjaxModel.CategoryDto.Category.Id}"]`);
-                        newTableRowObject.hide();
-                        categoryTableRow.replaceWith(newTableRowObject);
-                        newTableRowObject.fadeIn(3500);
-                        toastr.success(`${categoryUpdateAjaxModel.CategoryDto.Message}`, "Başarılı İşlem!");
-                    } else {
-                        let summaryText = "";
-                        $('#validation-summary > ul > li').each(function () {
-                            let text = $(this).text();
-                            summaryText = `*${text}\n`;
-                        });
-                        toastr.warning(summaryText);
-                    }
-                }).fail(function (response) {
-                    console.log(response.responseText);
-                    toString.error(response.responseText);
-                });
+                    const newTableRowObject = $(newTableRow);
+                    const categoryTableRow = $(`[name="${categoryUpdateAjaxModel.CategoryDto.Category.Id}"]`);
+                    newTableRowObject.hide();
+                    categoryTableRow.replaceWith(newTableRowObject);
+                    newTableRowObject.fadeIn(3500);
+                    toastr.success(`${categoryUpdateAjaxModel.CategoryDto.Message}`, "Başarılı İşlem!");
+                } else {
+                    let summaryText = [];
+                    $('#validation-summary > ul > li').each(function () {
+                        let text = $(this).text();
+                        summaryText.push(`*${text}`);
+                    });
+                    summaryText.forEach((element) => {
+                        toastr.warning(element);
+                    });
+                }
+            }).fail(function (response) {
+                console.log(response.responseText);
+                toString.error(response.responseText);
             });
+        });
     });
 });
