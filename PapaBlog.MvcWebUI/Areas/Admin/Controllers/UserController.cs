@@ -11,6 +11,7 @@ using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
@@ -38,6 +39,17 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                 Message = "Başarılı",
                 ResultStatus = ResultStatus.Success
             });
+        }
+
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var userListDto = JsonSerializer.Serialize(new UserListDto
+            {
+                Users = users,
+                ResultStatus = ResultStatus.Success
+            }, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve });
+            return Json(userListDto);
         }
 
         public IActionResult Add()
