@@ -41,7 +41,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             });
         }
 
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<JsonResult> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
             var userListDto = JsonSerializer.Serialize(new UserListDto
@@ -52,13 +52,41 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return Json(userListDto);
         }
 
+        public async Task<JsonResult> Delete(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                var deletedUser = JsonSerializer.Serialize(new UserDto
+                {
+                    ResultStatus = ResultStatus.Success,
+                    Users = user,
+                    Message = $"{user.UserName} adlı kullanıcı başarılı bir şekilde siinmiştir."
+                });
+                return Json(deletedUser);
+            }
+            string errorMessage = "";
+            foreach (var item in result.Errors)
+            {
+                errorMessage = $"* {item.Description}";
+            }
+            var deletedUserErrorModel = JsonSerializer.Serialize(new UserDto
+            {
+                ResultStatus = ResultStatus.Error,
+                Message = $"{user.UserName} adlı kullanıcı silinirken bir hata oluştu.\n{errorMessage}",
+                Users = user
+            });
+            return Json(deletedUserErrorModel);
+        }
+
         public IActionResult Add()
         {
             return PartialView("_PartialAddUser");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(UserAddDto userAddDto)
+        public async Task<JsonResult> Add(UserAddDto userAddDto)
         {
             if (ModelState.IsValid)
             {

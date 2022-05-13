@@ -373,10 +373,10 @@
         event.preventDefault();
         const id = $(this).data('id');
         const tableRow = $(`[name=${id}]`);
-        const categoryName = tableRow.find('td:eq(1)').text();
+        const userName = tableRow.find('td:eq(1)').text();
         Swal.fire({
             title: 'Silmek istediğinize emin misiniz?',
-            text: `${categoryName} adlı kategori silinecektir!`,
+            text: `${userName} adlı kullanıcı silinecektir!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -388,23 +388,23 @@
                 $.ajax({
                     type: 'Post',
                     dataType: 'json',
-                    data: { categoryId: id },
-                    url: '/Admin/Category/Delete',
+                    data: { userId: id },
+                    url: '/Admin/User/Delete',
                     success: function (data) {
-                        const categoryDto = jQuery.parseJSON(data);
-                        if (categoryDto.ResultStatus === 0) {
+                        const userDto = jQuery.parseJSON(data);
+                        console.log(userDto);
+                        if (userDto.ResultStatus === 0) {
                             Swal.fire(
                                 'Silindi!',
-                                `${categoryDto.Category.Name} kategorisi başarılı bir şekilde silindi.`,
+                                `${userDto.Users.UserName} kullanıcısı başarılı bir şekilde silindi.`,
                                 'success'
                             );
-                            const tableRow = $(`[name="${id}"]`);
-                            tableRow.fadeOut(2000);
+                            datatable.row(tableRow).remove().draw();
                         } else {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Başarısız işlem!',
-                                text: `${categoryDto.Message}`
+                                text: `${userDto.Message}`
                             });
                         }
                     },
