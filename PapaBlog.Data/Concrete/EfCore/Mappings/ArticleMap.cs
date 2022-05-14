@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PapaBlog.Entities.Concrete;
-using System;
 
 namespace PapaBlog.Data.Concrete.EfCore.Mappings
 {

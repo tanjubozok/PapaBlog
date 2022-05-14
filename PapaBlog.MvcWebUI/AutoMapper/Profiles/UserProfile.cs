@@ -9,6 +9,7 @@ namespace PapaBlog.MvcWebUI.AutoMapper.Profiles
         public UserProfile()
         {
             CreateMap<UserAddDto, User>();
+            CreateMap<User, UserUpdateDto>().ReverseMap();
         }
     }
 }

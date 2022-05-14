@@ -5,7 +5,6 @@ using PapaBlog.Data.Concrete;
 using PapaBlog.Data.Concrete.EfCore.Contexts;
 using PapaBlog.Entities.Concrete;
 using PapaBlog.Services.Abstract;
-using PapaBlog.Services.AutoMapper.Profiles;
 using PapaBlog.Services.Concrete;
 using System;
 
