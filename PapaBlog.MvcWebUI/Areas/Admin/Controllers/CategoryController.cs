@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PapaBlog.Dtos.Concrete.CategoryDtos;
 using PapaBlog.MvcWebUI.Areas.Admin.Models;
 using PapaBlog.Services.Abstract;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin,Editor")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

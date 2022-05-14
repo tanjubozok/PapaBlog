@@ -31,7 +31,6 @@
                         success: function (data) {
                             const userListDto = jQuery.parseJSON(data);
                             dataTable.clear();
-                            console.log(userListDto);
                             if (userListDto.ResultStatus === 0) {
                                 $.each(userListDto.Users.$values,
                                     function (index, user) {
@@ -336,9 +335,7 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    console.log(data);
                     const userAddAjaxModel = jQuery.parseJSON(data);
-                    console.log(userAddAjaxModel);
                     const newFormBody = $('.modal-body', userAddAjaxModel.UserAddPartial);
                     placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                     const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
@@ -454,6 +451,7 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
+                    console.log(data);
                     const userUpdateAjaxModel = jQuery.parseJSON(data);
                     console.log(userUpdateAjaxModel);
                     const id = userUpdateAjaxModel.UserDto.Users.Id;

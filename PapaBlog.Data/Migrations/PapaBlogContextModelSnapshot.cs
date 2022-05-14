@@ -227,6 +227,22 @@ namespace PapaBlog.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "503ff56a-c80a-4a9c-b0d4-f40c1a19fa07",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "7c86c883-9974-47a9-b62d-5935fce274ed",
+                            Name = "Editor",
+                            NormalizedName = "EDITOR"
+                        });
                 });
 
             modelBuilder.Entity("PapaBlog.Entities.Concrete.RoleClaim", b =>
@@ -322,6 +338,44 @@ namespace PapaBlog.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "35326c3f-0ee3-4aa5-b809-990dc98d67ec",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFVm8qLzlHhAmNfls3lNH4HXaCt6Q8TzR7cICRI523F2e1rycVRgjOnfM/FUZBpSzA==",
+                            PhoneNumber = "1111111111111",
+                            PhoneNumberConfirmed = true,
+                            Picture = "default.png",
+                            SecurityStamp = "ee5918e7-c210-42aa-9431-323257557ace",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "728de637-52a2-46af-a0ac-64fd99a638af",
+                            Email = "editor@editor.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "EDITOR@EDITOR.COM",
+                            NormalizedUserName = "EDITOR",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPzqlSdgNE9ST/a1O52bJaKFtdg0PCUSbVk5KyAxihhYO0kKoTAjcIxxMzOK3N7xkg==",
+                            PhoneNumber = "2222222222222",
+                            PhoneNumberConfirmed = true,
+                            Picture = "default.png",
+                            SecurityStamp = "756b343f-8c26-4848-bd0f-192199eddd01",
+                            TwoFactorEnabled = false,
+                            UserName = "editor"
+                        });
                 });
 
             modelBuilder.Entity("PapaBlog.Entities.Concrete.UserClaim", b =>
@@ -383,6 +437,18 @@ namespace PapaBlog.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("PapaBlog.Entities.Concrete.UserToken", b =>

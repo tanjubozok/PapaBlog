@@ -11,6 +11,17 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
             builder.HasKey(r => new { r.UserId, r.RoleId });
 
             builder.ToTable("AspNetUserRoles");
+
+            builder.HasData(
+                new UserRole
+                {
+                    RoleId = 1,
+                    UserId = 1,
+                }, new UserRole
+                {
+                    RoleId = 2,
+                    UserId = 2
+                });
         }
     }
 }

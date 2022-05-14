@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PapaBlog.Entities.Concrete;
+using System;
 
 namespace PapaBlog.Data.Concrete.EfCore.Mappings
 {
@@ -21,6 +22,21 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
 
             builder.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.RoleId).IsRequired();
             builder.HasMany<RoleClaim>().WithOne().HasForeignKey(rc => rc.RoleId).IsRequired();
+
+            builder.HasData(
+                new Role
+                {
+                    Id = 1,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                }, new Role
+                {
+                    Id = 2,
+                    Name = "Editor",
+                    NormalizedName = "EDITOR",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                });
         }
     }
 }

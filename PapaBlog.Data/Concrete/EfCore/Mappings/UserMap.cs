@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PapaBlog.Entities.Concrete;
+using System;
 
 namespace PapaBlog.Data.Concrete.EfCore.Mappings
 {
@@ -29,6 +31,44 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
             builder.HasMany<UserLogin>().WithOne().HasForeignKey(ul => ul.UserId).IsRequired();
             builder.HasMany<UserToken>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
             builder.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
+
+            var adminUser = new User
+            {
+                Id = 1,
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM",
+                PhoneNumber = "1111111111111",
+                Picture = "default.png",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            adminUser.PasswordHash = CreatePasswordHash(adminUser, "12345");
+
+            var editorUser = new User
+            {
+                Id = 2,
+                UserName = "editor",
+                NormalizedUserName = "EDITOR",
+                Email = "editor@editor.com",
+                NormalizedEmail = "EDITOR@EDITOR.COM",
+                PhoneNumber = "2222222222222",
+                Picture = "default.png",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            editorUser.PasswordHash = CreatePasswordHash(editorUser, "12345");
+
+            builder.HasData(adminUser, editorUser);
+        }
+
+        private string CreatePasswordHash(User user, string password)
+        {
+            var passwordHasher = new PasswordHasher<User>();
+            return passwordHasher.HashPassword(user, password);
         }
     }
 }

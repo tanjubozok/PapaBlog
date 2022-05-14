@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PapaBlog.Data.Migrations
 {
@@ -244,6 +244,34 @@ namespace PapaBlog.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { 1, "503ff56a-c80a-4a9c-b0d4-f40c1a19fa07", "Admin", "ADMIN" },
+                    { 2, "7c86c883-9974-47a9-b62d-5935fce274ed", "Editor", "EDITOR" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { 1, 0, "35326c3f-0ee3-4aa5-b809-990dc98d67ec", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAEFVm8qLzlHhAmNfls3lNH4HXaCt6Q8TzR7cICRI523F2e1rycVRgjOnfM/FUZBpSzA==", "1111111111111", true, "default.png", "ee5918e7-c210-42aa-9431-323257557ace", false, "admin" },
+                    { 2, 0, "728de637-52a2-46af-a0ac-64fd99a638af", "editor@editor.com", true, false, null, "EDITOR@EDITOR.COM", "EDITOR", "AQAAAAEAACcQAAAAEPzqlSdgNE9ST/a1O52bJaKFtdg0PCUSbVk5KyAxihhYO0kKoTAjcIxxMzOK3N7xkg==", "2222222222222", true, "default.png", "756b343f-8c26-4848-bd0f-192199eddd01", false, "editor" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { 2, 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_CategoryId",

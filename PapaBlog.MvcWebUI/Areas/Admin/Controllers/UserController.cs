@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -21,16 +22,19 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHost;
 
-        public UserController(UserManager<User> userManager, IWebHostEnvironment webHost, IMapper mapper)
+        public UserController(UserManager<User> userManager, IWebHostEnvironment webHost, IMapper mapper, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _webHost = webHost;
             _mapper = mapper;
+            _signInManager = signInManager;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -42,6 +46,35 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             });
         }
 
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(userLoginDto.Email);
+                if (user != null)
+                {
+                    var result = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, userLoginDto.RememberMe, false);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    ModelState.AddModelError("", "E-posta adresi veya Şifre hatalıdır.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "E-posta adresi veya Şifre hatalıdır.");
+                }
+            }
+            return View(userLoginDto);
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -53,6 +86,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return Json(userListDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> Delete(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -80,12 +114,14 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return Json(deletedUserErrorModel);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Add()
         {
             return PartialView("_PartialAddUser");
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> Add(UserAddDto userAddDto)
         {
             if (ModelState.IsValid)
@@ -128,6 +164,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return Json(userAddAjaxViewModelStataErrorModel);
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<string> ImagesUpload(string userName, IFormFile pictureFile)
         {
             DateTime dateTime = new DateTime();
@@ -143,6 +180,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return fileName;
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         public bool ImageDelete(string pictureName)
         {
             string wwwRoot = _webHost.WebRootPath;
@@ -155,6 +193,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return false;
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<PartialViewResult> Update(int userId)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
@@ -163,6 +202,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto)
         {
             if (ModelState.IsValid)
@@ -215,17 +255,13 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return Json(userUpdateErrorModelStateViewModel);
         }
 
-        public IActionResult Login()
-        {
-            return View();
-        }
-
+        [Authorize]
         public IActionResult Logout()
         {
             return View();
         }
 
-        public IActionResult AccessDenied()
+        public ViewResult AccessDenied()
         {
             return View();
         }
