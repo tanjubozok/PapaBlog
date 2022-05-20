@@ -16,7 +16,7 @@
 
     <div id="layoutSidenav">
 
-        @await Html.PartialAsync("_PartialSideNav");
+        @await Component.InvokeAsync("AdminMenu");
 
         <div id="layoutSidenav_content">
             <main>

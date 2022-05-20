@@ -1,0 +1,49 @@
+﻿@model UserUpdateDto
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Kullanıcı Düzenle";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
+                <div class="card-body">
+                    <form asp-area="Admin" asp-controller="User" asp-action="ChangeDetail" id="form-user-add">
+                        <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
+                        <div asp-validation-summary="All" class="text-danger" id="validation-summary" aria-hidden="true" style="display:none;"></div>
+                        <div class="form-group">
+                            <label asp-for="UserName"></label>
+                            <input type="text" asp-for="UserName" class="form-control" placeholder="kullanıcı adı">
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <input type="email" asp-for="Email" class="form-control" placeholder="e-posta adresi">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password"></label>
+                            <input type="password" asp-for="Password" class="form-control" placeholder="şifre">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input type="tel" asp-for="PhoneNumber" class="form-control" placeholder="telefon numarası">
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PictureFile"></label>
+                            <input type="file" accept="images/*" asp-for="PictureFile" class="form-control-file" placeholder="profil resmi">
+                            <span asp-validation-for="PictureFile" class="text-danger"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <div class="small"><a href="login.html">Have an account? Go to login</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

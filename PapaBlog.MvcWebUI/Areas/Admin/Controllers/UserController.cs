@@ -46,7 +46,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             });
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string url)
         {
             return View();
         }
@@ -256,9 +256,18 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         }
 
         [Authorize]
-        public IActionResult Logout()
+        public async Task<ViewResult> ChangeDetail()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var updateDto = _mapper.Map<UserUpdateDto>(user);
+            return View(updateDto);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home", new { Area = "" });
         }
 
         public ViewResult AccessDenied()
