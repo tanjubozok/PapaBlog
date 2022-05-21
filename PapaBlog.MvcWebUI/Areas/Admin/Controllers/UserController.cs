@@ -61,15 +61,12 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, userLoginDto.RememberMe, false);
                     if (result.Succeeded)
-                    {
                         return RedirectToAction("Index", "Home");
-                    }
+
                     ModelState.AddModelError("", "E-posta adresi veya Şifre hatalıdır.");
                 }
                 else
-                {
                     ModelState.AddModelError("", "E-posta adresi veya Şifre hatalıdır.");
-                }
             }
             return View(userLoginDto);
         }
@@ -261,6 +258,44 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var updateDto = _mapper.Map<UserUpdateDto>(user);
             return View(updateDto);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ViewResult> ChangeDetail(UserUpdateDto userUpdateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isNewPictureUpload = false;
+                var oldUser = await _userManager.GetUserAsync(HttpContext.User);
+                var oldUserPicture = oldUser.Picture;
+                if (userUpdateDto.PictureFile != null)
+                {
+                    userUpdateDto.Picture = await ImagesUpload(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    if (oldUserPicture != "default.png")
+                        isNewPictureUpload = true;
+                }
+                var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
+                var result = await _userManager.UpdateAsync(updatedUser);
+                if (result.Succeeded)
+                {
+                    if (isNewPictureUpload)
+                        ImageDelete(oldUserPicture);
+
+                    TempData.Add("SuccessMessage", $"'{updatedUser.UserName}' adlı kullanıcı başarıyla güncellenmiştir.");
+                    return View(userUpdateDto);
+                }
+                else
+                {
+                    foreach (var item in result.Errors)
+                        ModelState.AddModelError("", item.Description);
+                    return View(userUpdateDto);
+                }
+            }
+            else
+            {
+                return View(userUpdateDto);
+            }
         }
 
         [Authorize]

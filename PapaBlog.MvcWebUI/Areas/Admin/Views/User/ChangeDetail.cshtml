@@ -1,18 +1,19 @@
 ﻿@model UserUpdateDto
 @{
     Layout = "_Layout";
-    ViewBag.Title = "Kullanıcı Düzenle";
+    ViewBag.Title = Model.UserName + " - Kullanıcı Düzenle";
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-7">
             <div class="card shadow-lg border-0 rounded-lg mt-5">
-                <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
-                <div class="card-body">
-                    <form asp-area="Admin" asp-controller="User" asp-action="ChangeDetail" id="form-user-add">
+                <form asp-area="Admin" asp-controller="User" asp-action="ChangeDetail" method="post" enctype="multipart/form-data">
+                    <div class="card-header"><h3 class="text-center font-weight-light my-4">@Model.UserName - Profil Düzenle</h3></div>
+                    <div class="card-body">
                         <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
-                        <div asp-validation-summary="All" class="text-danger" id="validation-summary" aria-hidden="true" style="display:none;"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <div asp-validation-summary="All" class="text-danger" id="validation-summary"></div>
                         <div class="form-group">
                             <label asp-for="UserName"></label>
                             <input type="text" asp-for="UserName" class="form-control" placeholder="kullanıcı adı">
@@ -24,25 +25,32 @@
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Password"></label>
-                            <input type="password" asp-for="Password" class="form-control" placeholder="şifre">
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
                             <label asp-for="PhoneNumber"></label>
                             <input type="tel" asp-for="PhoneNumber" class="form-control" placeholder="telefon numarası">
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Picture"></label>
+                            <input type="hidden" asp-for="Picture" />
+                            <img src="~/img/@Model.Picture" class="img-fluid img-thumbnail" alt="@Model.Picture" style="max-width:64px;max-height:64px;" />
                         </div>
                         <div class="form-group">
                             <label asp-for="PictureFile"></label>
                             <input type="file" accept="images/*" asp-for="PictureFile" class="form-control-file" placeholder="profil resmi">
                             <span asp-validation-for="PictureFile" class="text-danger"></span>
                         </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <div class="small"><a href="login.html">Have an account? Go to login</a></div>
-                </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a class="btn btn-default" asp-area="Admin" asp-controller="Home" asp-action="Index">
+                            <span class="fas fa-times"></span>
+                            İptal
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <span class="fas fa-edit"></span>
+                            Güncelle
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
