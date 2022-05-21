@@ -11,7 +11,6 @@
                 <form asp-area="Admin" asp-controller="User" asp-action="ChangeDetail" method="post" enctype="multipart/form-data">
                     <div class="card-header"><h3 class="text-center font-weight-light my-4">@Model.UserName - Profil Düzenle</h3></div>
                     <div class="card-body">
-                        <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
                         <input type="hidden" asp-for="Id" />
                         <div asp-validation-summary="All" class="text-danger" id="validation-summary"></div>
                         <div class="form-group">

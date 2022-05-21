@@ -299,6 +299,47 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        public async Task<ViewResult> PasswordChange()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userPasswordChangeDto = _mapper.Map<UserPasswordChangeDto>(user);
+            return View(userPasswordChangeDto);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> PasswordChange(UserPasswordChangeDto userPasswordChageDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var isVerified = await _userManager.CheckPasswordAsync(user, userPasswordChageDto.Password);
+                if (isVerified)
+                {
+                    var result = await _userManager.ChangePasswordAsync(user, userPasswordChageDto.Password, userPasswordChageDto.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        await _userManager.UpdateSecurityStampAsync(user);
+                        await _signInManager.SignOutAsync();
+                        await _signInManager.PasswordSignInAsync(user, userPasswordChageDto.NewPassword, true, false);
+
+                        TempData.Add("SuccessMessage", $"{user.UserName} adlı kullanıcı başarılı bir şekilde şifresi değişti.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Kayıt sırasında bir hata oluştu.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Girmiş olduğunuz şifre hatalıdır.");
+                }
+            }
+            return View(userPasswordChageDto);
+        }
+
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
