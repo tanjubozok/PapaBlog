@@ -6,6 +6,8 @@
         Error = 1,
         Warning = 2,
         Info = 3,
-        TryCatch = 4
+        TryCatch = 4,
+        NotFound = 5,
+        IdNotFound = 6
     }
 }

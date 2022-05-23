@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PapaBlog.Data.Abstract;
 using PapaBlog.Data.Concrete;
@@ -21,9 +22,13 @@ namespace PapaBlog.Services.Extensions
             return services;
         }
 
-        public static IServiceCollection LoadMyUserSetting(this IServiceCollection services)
+        public static IServiceCollection LoadMyUserSetting(this IServiceCollection services, string connecitonString)
         {
-            services.AddDbContext<PapaBlogContext>();
+            services.AddDbContext<PapaBlogContext>(options =>
+            {
+                options.UseSqlServer(connecitonString);
+            });
+
             services.AddIdentity<User, Role>(options =>
             {
                 options.Password.RequireDigit = false;

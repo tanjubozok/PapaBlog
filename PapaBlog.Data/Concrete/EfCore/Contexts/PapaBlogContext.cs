@@ -7,14 +7,13 @@ namespace PapaBlog.Data.Concrete.EfCore.Contexts
 {
     public class PapaBlogContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
+        public PapaBlogContext(DbContextOptions<PapaBlogContext> options) : base(options)
+        {
+        }
+
         public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=.;Database=PapaBlogData;Trusted_Connection=True;");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

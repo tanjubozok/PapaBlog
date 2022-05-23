@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PapaBlog.MvcWebUI.AutoMapper.Profiles;
@@ -14,6 +15,13 @@ namespace PapaBlog.MvcWebUI
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddJsonOptions(opt =>
@@ -29,7 +37,7 @@ namespace PapaBlog.MvcWebUI
                 typeof(UserProfile));
 
             services.LoadMyService();
-            services.LoadMyUserSetting();
+            services.LoadMyUserSetting(Configuration.GetConnectionString("LocalDb"));
             services.LoadMyCookieSetting();
 
             services.AddScoped<IImageHelper, ImageHelper>();
