@@ -36,7 +36,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CategoryAddDto categoryAddDto)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 var result = await _categoryService.Add(categoryAddDto, "System");
                 if (result.ResultStatus == ResultStatus.Success)
@@ -69,7 +69,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 var result = await _categoryService.Update(categoryUpdateDto, "System");
                 if (result.ResultStatus == ResultStatus.Success)

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PapaBlog.MvcWebUI.AutoMapper.Profiles;
+using PapaBlog.MvcWebUI.Helpers.Abstract;
+using PapaBlog.MvcWebUI.Helpers.Concrete;
 using PapaBlog.Services.AutoMapper.Profiles;
 using PapaBlog.Services.Extensions;
 using System.Text.Json;
@@ -16,18 +18,21 @@ namespace PapaBlog.MvcWebUI
         {
             services.AddControllersWithViews().AddJsonOptions(opt =>
             {
-                opt.JsonSerializerOptions.Converters.Add(
-                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             });
 
             services.AddSession();
-            services.AddAutoMapper(typeof(ArticleProfile), typeof(CategoryProfile), typeof(UserProfile));
+            services.AddAutoMapper(
+                typeof(ArticleProfile),
+                typeof(CategoryProfile),
+                typeof(UserProfile));
 
             services.LoadMyService();
             services.LoadMyUserSetting();
             services.LoadMyCookieSetting();
+
+            services.AddScoped<IImageHelper, ImageHelper>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using PapaBlog.Dtos.Concrete.UserDtos;
 using PapaBlog.Entities.Concrete;
 using PapaBlog.MvcWebUI.Areas.Admin.Models;
+using PapaBlog.MvcWebUI.Helpers.Abstract;
 using PapaBlog.Shared.Utilities.Extensions;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using System;
@@ -24,14 +24,14 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHost;
+        private readonly IImageHelper _imageHelper;
 
-        public UserController(UserManager<User> userManager, IWebHostEnvironment webHost, IMapper mapper, SignInManager<User> signInManager)
+        public UserController(UserManager<User> userManager, IMapper mapper, SignInManager<User> signInManager, IImageHelper imageHelper)
         {
             _userManager = userManager;
-            _webHost = webHost;
             _mapper = mapper;
             _signInManager = signInManager;
+            _imageHelper = imageHelper;
         }
 
         [Authorize(Roles = "Admin")]
@@ -123,7 +123,11 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                userAddDto.Picture = await ImagesUpload(userAddDto.UserName, userAddDto.PictureFile);
+                var uploadedImageDtoResult = await _imageHelper.UploadUserImage(userAddDto.UserName, userAddDto.PictureFile, "newUserImages");
+                userAddDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success
+                    ? uploadedImageDtoResult.Data.FullName
+                    : "userImages/defaultUser.png";
+
                 var user = _mapper.Map<User>(userAddDto);
                 var result = await _userManager.CreateAsync(user, userAddDto.Password);
                 if (result.Succeeded)
@@ -162,32 +166,17 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "Admin,Editor")]
-        public async Task<string> ImagesUpload(string userName, IFormFile pictureFile)
-        {
-            DateTime dateTime = new DateTime();
-            string wwwroot = _webHost.WebRootPath;
-            //string fileName2 = Path.GetFileNameWithoutExtension(pictureFile.FileName);
-            string fileExtension = Path.GetExtension(pictureFile.FileName);
-            string fileName = $"{userName}_{dateTime.FullDateAndTimeStringWithUnderScore()}{fileExtension}";
-            var path = Path.Combine($"{wwwroot}/img", fileName);
-
-            await using (FileStream stream = new(path, FileMode.Create))
-                await pictureFile.CopyToAsync(stream);
-
-            return fileName;
-        }
-
-        [Authorize(Roles = "Admin,Editor")]
         public bool ImageDelete(string pictureName)
         {
-            string wwwRoot = _webHost.WebRootPath;
-            var fileToDelete = Path.Combine($"{wwwRoot}/img", pictureName);
-            if (System.IO.File.Exists(fileToDelete))
-            {
-                System.IO.File.Delete(fileToDelete);
-                return true;
-            }
-            return false;
+            //string wwwRoot = _webHost.WebRootPath;
+            //var fileToDelete = Path.Combine($"{wwwRoot}/img", pictureName);
+            //if (System.IO.File.Exists(fileToDelete))
+            //{
+            //    System.IO.File.Delete(fileToDelete);
+            //    return true;
+            //}
+            //return false;
+            return true;
         }
 
         [Authorize(Roles = "Admin,Editor")]
@@ -202,14 +191,17 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 bool isNewPictureUpload = false;
                 var oldUser = await _userManager.FindByIdAsync(userUpdateDto.Id.ToString());
                 var oldUserPicture = oldUser.Picture;
                 if (userUpdateDto.PictureFile != null)
                 {
-                    userUpdateDto.Picture = await ImagesUpload(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    var uploadedImageDtoResult = await _imageHelper.UploadUserImage(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success
+                        ? uploadedImageDtoResult.Data.FullName
+                        : "userImages/defaultUser.png";
                     isNewPictureUpload = true;
                 }
                 var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
@@ -271,7 +263,10 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                 var oldUserPicture = oldUser.Picture;
                 if (userUpdateDto.PictureFile != null)
                 {
-                    userUpdateDto.Picture = await ImagesUpload(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    var uploadedImageDtoResult = await _imageHelper.UploadUserImage(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success
+                        ? uploadedImageDtoResult.Data.FullName
+                        : "userImages/defaultUser.png";
                     if (oldUserPicture != "default.png")
                         isNewPictureUpload = true;
                 }
@@ -328,7 +323,10 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Kayıt sırasında bir hata oluştu.");
+                        foreach (var item in result.Errors)
+                        {
+                            ModelState.AddModelError("", item.Description);
+                        }
                     }
                 }
                 else
