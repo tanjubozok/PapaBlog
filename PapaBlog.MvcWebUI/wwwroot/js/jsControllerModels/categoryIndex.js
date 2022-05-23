@@ -63,6 +63,7 @@
                         error: function (err) {
                             $('.spinner-border').hide();
                             $('#categoriesTable').fadeIn(100);
+                            console.log(err);
                             toastr.error(`${err.responseText}`, 'Hata!');
                         }
                     });
@@ -419,6 +420,7 @@
                         }
                     },
                     error: function (err) {
+                        console.log(err)
                         toastr.error(`${err.responseText}`, 'Hata!');
                     }
                 });
@@ -443,8 +445,9 @@
                 placeHolderDiv.html(data);
                 placeHolderDiv.find('.modal').modal('show');
 
-            }).fail(function () {
-                toastr.error("fail", "Hata");
+            }).fail(function (err) {
+                console.log(err);
+                toastr.error(`${err.responseText}`, "Hata!");
             });
         });
 
@@ -494,9 +497,9 @@
                         toastr.warning(element);
                     });
                 }
-            }).fail(function (response) {
-                console.log(response.responseText);
-                toString.error(response.responseText);
+            }).fail(function (err) {
+                console.log(err);
+                toastr.error(`${err.responseText}`, "Hata!");
             });
         });
     });

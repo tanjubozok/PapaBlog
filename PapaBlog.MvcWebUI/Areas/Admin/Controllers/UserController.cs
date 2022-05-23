@@ -10,8 +10,6 @@ using PapaBlog.MvcWebUI.Areas.Admin.Models;
 using PapaBlog.MvcWebUI.Helpers.Abstract;
 using PapaBlog.Shared.Utilities.Extensions;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
-using System;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;

@@ -31,8 +31,8 @@
             <main>
                 @RenderBody()
             </main>
+            @await Html.PartialAsync("_PartialFooter")
         </div>
-        @await Html.PartialAsync("_PartialFooter")
     </div>
 
     @await Html.PartialAsync("_PartialJs")
