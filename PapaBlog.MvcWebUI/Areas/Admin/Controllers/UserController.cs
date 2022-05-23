@@ -166,20 +166,6 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "Admin,Editor")]
-        public bool ImageDelete(string pictureName)
-        {
-            //string wwwRoot = _webHost.WebRootPath;
-            //var fileToDelete = Path.Combine($"{wwwRoot}/img", pictureName);
-            //if (System.IO.File.Exists(fileToDelete))
-            //{
-            //    System.IO.File.Delete(fileToDelete);
-            //    return true;
-            //}
-            //return false;
-            return true;
-        }
-
-        [Authorize(Roles = "Admin,Editor")]
         public async Task<PartialViewResult> Update(int userId)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
@@ -202,14 +188,15 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                     userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success
                         ? uploadedImageDtoResult.Data.FullName
                         : "userImages/defaultUser.png";
-                    isNewPictureUpload = true;
+                    if (oldUserPicture != "default.png")
+                        isNewPictureUpload = true;
                 }
                 var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
                 var result = await _userManager.UpdateAsync(updatedUser);
                 if (result.Succeeded)
                 {
                     if (isNewPictureUpload)
-                        ImageDelete(oldUserPicture);
+                        _imageHelper.Delete(oldUserPicture);
 
                     var userUpdateViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
                     {
@@ -275,7 +262,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                 if (result.Succeeded)
                 {
                     if (isNewPictureUpload)
-                        ImageDelete(oldUserPicture);
+                        _imageHelper.Delete(oldUserPicture);
 
                     TempData.Add("SuccessMessage", $"'{updatedUser.UserName}' adlı kullanıcı başarıyla güncellenmiştir.");
                     return View(userUpdateDto);

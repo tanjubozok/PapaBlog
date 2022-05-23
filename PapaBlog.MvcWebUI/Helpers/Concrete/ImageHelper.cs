@@ -24,6 +24,26 @@ namespace PapaBlog.MvcWebUI.Helpers.Concrete
             _wwwRoot = _webHost.WebRootPath;
         }
 
+        public IDataResult<DeletedImageDto> Delete(string pictureName)
+        {
+            var fileToDelete = Path.Combine($"{_wwwRoot}/{imgFolder}/", pictureName);
+            if (File.Exists(fileToDelete))
+            {
+                FileInfo fileInfo = new(fileToDelete);
+                DeletedImageDto deletedImageDto = new()
+                {
+                    FullName = pictureName,
+                    Extension = fileInfo.Extension,
+                    Path = fileInfo.FullName,
+                    Size = fileInfo.Length
+                };
+                File.Delete(fileToDelete);
+                return new DataResult<DeletedImageDto>(ResultStatus.Success, deletedImageDto);
+            }
+            else
+                return new DataResult<DeletedImageDto>(ResultStatus.Error, "Böyle bir resim bulunamdı.", null);
+        }
+
         public async Task<IDataResult<UploadedImageDto>> UploadUserImage(string userName, IFormFile pictureFile, string folderName = "userImages")
         {
             if (!Directory.Exists($"{_wwwRoot}/{imgFolder}/{folderName}"))
