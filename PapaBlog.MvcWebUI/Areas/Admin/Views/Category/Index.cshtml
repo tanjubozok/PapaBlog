@@ -6,6 +6,15 @@
 }
 
 <div class="container-fluid">
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                Yönetim Paneli
+            </a>
+        </li>
+        <li class="breadcrumb-item active">Kategoriler</li>
+    </ol>
+
     @if (Model.ResultStatus == ResultStatus.Success)
     {
         <div id="modalPlaceHolder" aria-hidden="true"></div>
@@ -89,5 +98,5 @@
 </div>
 
 @section Scripts{
-<script src="~/js/jsControllerModels/categoryIndex.js"></script>
+    <script src="~/js/jsControllerModels/categoryIndex.js"></script>
 }
