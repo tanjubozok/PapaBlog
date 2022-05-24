@@ -30,9 +30,11 @@ namespace PapaBlog.Shared.Data.Concrete.EfCore
             return await _dbContext.Set<TEntity>().AnyAsync(predicate);
         }
 
-        public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return await _dbContext.Set<TEntity>().CountAsync(predicate);
+            return await (predicate == null
+                ? _dbContext.Set<TEntity>().CountAsync()
+                : _dbContext.Set<TEntity>().CountAsync(predicate));
         }
 
         public async Task DeleteAsync(TEntity entity)

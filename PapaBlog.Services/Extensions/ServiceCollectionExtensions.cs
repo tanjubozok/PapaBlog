@@ -18,6 +18,7 @@ namespace PapaBlog.Services.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
+            services.AddScoped<ICommentService, CommentManager>();
 
             return services;
         }

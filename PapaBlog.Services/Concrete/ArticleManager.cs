@@ -23,7 +23,7 @@ namespace PapaBlog.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<ArticleDto>> Add(ArticleAddDto articleAddDto, string createdByName)
+        public async Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdByName)
         {
             try
             {
@@ -60,7 +60,23 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleDto>> Delete(int articleId, string modifiedByName)
+        public async Task<IDataResult<int>> CountAsync()
+        {
+            var articlesCount = await _unitOfWork.Articles.CountAsync();
+            return articlesCount > -1
+                ? new DataResult<int>(ResultStatus.Success, articlesCount)
+                : new DataResult<int>(ResultStatus.Error, "Beklenmeyen bir durum oluştu.", -1);
+        }
+
+        public async Task<IDataResult<int>> CountByNonDeleteAsync()
+        {
+            var articlesCount = await _unitOfWork.Articles.CountAsync(x => !x.IsDeleted);
+            return articlesCount > -1
+                ? new DataResult<int>(ResultStatus.Success, articlesCount)
+                : new DataResult<int>(ResultStatus.Error, "Beklenmeyen bir durum oluştu.", -1);
+        }
+
+        public async Task<IDataResult<ArticleDto>> DeleteAsync(int articleId, string modifiedByName)
         {
             try
             {
@@ -106,7 +122,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleDto>> Get(int articleId)
+        public async Task<IDataResult<ArticleDto>> GetAsync(int articleId)
         {
             try
             {
@@ -146,7 +162,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleListDto>> GetAll()
+        public async Task<IDataResult<ArticleListDto>> GetAllAsync()
         {
             try
             {
@@ -177,7 +193,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleListDto>> GetAllByCategory(int categoryId)
+        public async Task<IDataResult<ArticleListDto>> GetAllByCategoryAsync(int categoryId)
         {
             try
             {
@@ -217,7 +233,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleListDto>> GetAllByNonDeleted()
+        public async Task<IDataResult<ArticleListDto>> GetAllByNonDeletedAsync()
         {
             try
             {
@@ -248,7 +264,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleListDto>> GetAllByNonDeletedAndActive()
+        public async Task<IDataResult<ArticleListDto>> GetAllByNonDeletedAndActiveAsync()
         {
             try
             {
@@ -279,7 +295,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleUpdateDto>> GetArticleUpdateDto(int articltId)
+        public async Task<IDataResult<ArticleUpdateDto>> GetArticleUpdateDtoAsycn(int articltId)
         {
             try
             {
@@ -297,7 +313,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IResult> HardDelete(int articleId)
+        public async Task<IResult> HardDeleteAsync(int articleId)
         {
             try
             {
@@ -320,7 +336,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<ArticleDto>> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName)
+        public async Task<IDataResult<ArticleDto>> UpdateAsync(ArticleUpdateDto articleUpdateDto, string modifiedByName)
         {
             try
             {

@@ -23,7 +23,7 @@ namespace PapaBlog.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createByName)
+        public async Task<IDataResult<CategoryDto>> AddAsync(CategoryAddDto categoryAddDto, string createByName)
         {
             try
             {
@@ -59,7 +59,23 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName)
+        public async Task<IDataResult<int>> CountAsync()
+        {
+            var categoriesCount = await _unitOfWork.Categories.CountAsync();
+            return categoriesCount > -1
+                ? new DataResult<int>(ResultStatus.Success, categoriesCount)
+                : new DataResult<int>(ResultStatus.Success, "Beklenmeyen bir hata oluştu.", -1);
+        }
+
+        public async Task<IDataResult<int>> CountByNonDeleteAsync()
+        {
+            var categoriesCount = await _unitOfWork.Categories.CountAsync(x => !x.IsDeleted);
+            return categoriesCount > -1
+                ? new DataResult<int>(ResultStatus.Success, categoriesCount)
+                : new DataResult<int>(ResultStatus.Success, "Beklenmeyen bir hata oluştu.", -1);
+        }
+
+        public async Task<IDataResult<CategoryDto>> DeleteAsync(int categoryId, string modifiedByName)
         {
             try
             {
@@ -114,13 +130,13 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<CategoryDto>> Get(int categoryId)
+        public async Task<IDataResult<CategoryDto>> GetAsync(int categoryId)
         {
             try
             {
                 if (await _unitOfWork.Categories.AnyAsync(x => x.Id == categoryId))
                 {
-                    var getCategory = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId, x => x.Articles);
+                    var getCategory = await _unitOfWork.Categories.GetAsync(x => x.Id == categoryId);
                     if (getCategory != null)
                     {
                         return new DataResult<CategoryDto>(ResultStatus.Success, new CategoryDto
@@ -154,11 +170,11 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<CategoryListDto>> GetAll()
+        public async Task<IDataResult<CategoryListDto>> GetAllAsync()
         {
             try
             {
-                var categories = await _unitOfWork.Categories.GetAllAsync(null, x => x.Articles);
+                var categories = await _unitOfWork.Categories.GetAllAsync();
                 if (categories.Count > 0)
                 {
                     return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
@@ -185,11 +201,11 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<CategoryListDto>> GetAllByNonDeleted()
+        public async Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAsync()
         {
             try
             {
-                var categories = await _unitOfWork.Categories.GetAllAsync(x => !x.IsDeleted, x => x.Articles);
+                var categories = await _unitOfWork.Categories.GetAllAsync(x => !x.IsDeleted);
                 if (categories.Count > 0)
                 {
                     return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
@@ -216,11 +232,11 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAndActive()
+        public async Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAndActiveAsync()
         {
             try
             {
-                var categories = await _unitOfWork.Categories.GetAllAsync(x => !x.IsDeleted && x.IsActive, x => x.Articles);
+                var categories = await _unitOfWork.Categories.GetAllAsync(x => !x.IsDeleted && x.IsActive);
                 if (categories.Count > 0)
                 {
                     return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
@@ -247,7 +263,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<CategoryUpdateDto>> GetCategoryUpdateDto(int categoryId)
+        public async Task<IDataResult<CategoryUpdateDto>> GetCategoryUpdateDtoAsync(int categoryId)
         {
             try
             {
@@ -265,7 +281,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IResult> HardDelete(int categoryId)
+        public async Task<IResult> HardDeleteAsync(int categoryId)
         {
             try
             {
@@ -292,7 +308,7 @@ namespace PapaBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
+        public async Task<IDataResult<CategoryDto>> UpdateAsync(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
         {
             try
             {

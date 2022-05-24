@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
-    $('#articlesTable').DataTable({       
+    $('#articlesTable').DataTable({
+        "order": [[4, "desc"]],
         language: {
             "emptyTable": "Tabloda herhangi bir veri mevcut değil",
             "info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
@@ -244,5 +245,5 @@
                 "renameTitle": "Görünüm İsmini Değiştir"
             }
         }
-    });    
+    });
 });

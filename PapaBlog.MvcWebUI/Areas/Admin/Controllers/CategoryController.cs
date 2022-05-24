@@ -24,7 +24,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = await _categoryService.GetAllByNonDeleted();
+            var result = await _categoryService.GetAllByNonDeletedAsync();
             return View(result.Data);
         }
 
@@ -38,7 +38,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var result = await _categoryService.Add(categoryAddDto, "System");
+                var result = await _categoryService.AddAsync(categoryAddDto, "System");
                 if (result.ResultStatus == ResultStatus.Success)
                 {
                     var categoryAddAjaxViewModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel
@@ -58,7 +58,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
 
         public async Task<IActionResult> Update(int categoryId)
         {
-            var result = await _categoryService.GetCategoryUpdateDto(categoryId);
+            var result = await _categoryService.GetCategoryUpdateDtoAsync(categoryId);
             if (result.ResultStatus == ResultStatus.Success)
             {
                 return PartialView("_PartialUpdateCategory", result.Data);
@@ -71,7 +71,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var result = await _categoryService.Update(categoryUpdateDto, "System");
+                var result = await _categoryService.UpdateAsync(categoryUpdateDto, "System");
                 if (result.ResultStatus == ResultStatus.Success)
                 {
                     var categoryUpdateAjaxViewModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
@@ -91,7 +91,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
 
         public async Task<JsonResult> GetAllCategories()
         {
-            var result = await _categoryService.GetAllByNonDeleted();
+            var result = await _categoryService.GetAllByNonDeletedAsync();
             var categories = JsonSerializer.Serialize(result.Data, new JsonSerializerOptions
             {
                 ReferenceHandler = ReferenceHandler.Preserve
@@ -102,7 +102,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> Delete(int categoryId)
         {
-            var result = await _categoryService.Delete(categoryId, "System");
+            var result = await _categoryService.DeleteAsync(categoryId, "System");
             var category = JsonSerializer.Serialize(result.Data);
             return Json(category);
         }
