@@ -29,9 +29,9 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="categoryList">Kategori</label>
+                            <label>Kategori</label>
                             <select id="categoryList" class="form-control">
-                                <option disabled="disabled">Lütfen bir kategori seçiniz...</option>
+                                <option></option>
                                 <option>C#</option>
                                 <option>C++</option>
                                 <option>Javascript</option>
@@ -41,7 +41,7 @@
                         </div>
                         <div class="form-group">
                             <label for="datepicker">Tarih</label>
-                            <input type="text" id="datepicker" class="form-control" value="@DateTime.Now.ToShortDateString()" />
+                            <input type="text" id="datepicker" class="form-control" value="@DateTime.Now.ToString("dd.MM.yyyy")" />
                         </div>
                         <div class="form-group">
                             <label for="thumbnailUpload">Küçük Resim</label>
@@ -91,6 +91,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/emoji/trumbowyg.emoji.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/fontfamily/trumbowyg.fontfamily.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/fontsize/trumbowyg.fontsize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="~/js/jsControllerModels/articleAdd.js"></script>
 }
 
@@ -99,4 +101,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/ui/trumbowyg.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/colors/ui/trumbowyg.colors.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/emoji/ui/trumbowyg.emoji.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/jquery-ui.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/theme.min.css" />
+    <link href="~/css/select2-bootstrap4.min.css" rel="stylesheet" />
 }
