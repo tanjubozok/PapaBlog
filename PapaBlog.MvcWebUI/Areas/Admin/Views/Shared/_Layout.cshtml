@@ -9,6 +9,10 @@
     <title>@ViewBag.Title || Dashboard</title>
 
     @await Html.PartialAsync("_PartialCss");
+    @await RenderSectionAsync("Styles",false);
+
+    <link href="~/css/site.css" rel="stylesheet" />
+
 </head>
 <body class="sb-nav-fixed">
 

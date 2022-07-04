@@ -232,14 +232,14 @@ namespace PapaBlog.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "edbda3c6-d101-41bb-b4cb-f6f1dba251ee",
+                            ConcurrencyStamp = "bebcb2e4-ef57-4eff-bf2c-47bc44349818",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "91812f3c-306a-4f69-bdaa-975ecfb679ab",
+                            ConcurrencyStamp = "d0393f5c-f5dd-433b-8c69-94450860c997",
                             Name = "Editor",
                             NormalizedName = "EDITOR"
                         });
@@ -344,17 +344,17 @@ namespace PapaBlog.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ab0c971b-2ffa-436e-bb1e-cf05973bf212",
+                            ConcurrencyStamp = "a74af058-8d7e-4688-a71b-8d640da0b0ce",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEODHScms76eyBmMgFFglE7keT6rCq13D2ePQuGcEnndeqPOWaOgoHHAFrnYd0X9fWg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFaEXZdml4w4RIv1s2BchApqEf6RswmN2UvVeZiE1bTN73NnSrjU4Ir/FZ3kFCGU7Q==",
                             PhoneNumber = "1111111111111",
                             PhoneNumberConfirmed = true,
                             Picture = "default.png",
-                            SecurityStamp = "ac7509b8-6895-4d0f-b533-3c06f5603ae9",
+                            SecurityStamp = "bc760eec-cd8c-480d-93ca-78f9b932a068",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -362,17 +362,17 @@ namespace PapaBlog.Data.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fb472475-42f5-4460-b31d-3cf1f32937f7",
+                            ConcurrencyStamp = "7820a481-8f0d-4c80-8431-94a55482c811",
                             Email = "editor@editor.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "EDITOR@EDITOR.COM",
                             NormalizedUserName = "EDITOR",
-                            PasswordHash = "AQAAAAEAACcQAAAAEF96mh73BtuUwub4PHWxzBt+bMd5QPaiuduoz5ByqfVpqfoejK5IM4eadNkXBeyI4A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIs+mModvCHcOcuWZ8jkY90AHzhgBUplHfvu7l6GliMcdB7v82CbOoDpUjvlsoj3kA==",
                             PhoneNumber = "2222222222222",
                             PhoneNumberConfirmed = true,
                             Picture = "default.png",
-                            SecurityStamp = "916bb42e-8e91-4e45-8c4a-93b8922ace43",
+                            SecurityStamp = "63a73470-db8c-41b5-b817-6b35bf04a83a",
                             TwoFactorEnabled = false,
                             UserName = "editor"
                         });

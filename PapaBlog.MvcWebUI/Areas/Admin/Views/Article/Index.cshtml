@@ -1,0 +1,97 @@
+﻿@model ArticleListDto
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Makaleler";
+}
+<div class="container-fluid">
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                Yönetim Paneli
+            </a>
+        </li>
+        <li class="breadcrumb-item active">Makaleler</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Makaleler
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="articlesTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Kategori</th>
+                            <th>Başlık</th>
+                            <th>Küçük Resim</th>
+                            <th>Tarih</th>
+                            <th>Okunma Sayısı</th>
+                            <th>Yorum Sayısı</th>
+                            <th>Aktif Mi?</th>
+                            <th>Silinmiş Mi?</th>
+                            <th>Oluşturulma Tarihi</th>
+                            <th>Oluşturan Kullanıcı Adı</th>
+                            <th>Son Düzenlenme Tarihi</th>
+                            <th>Son Düzenleyen Kullanıcı Adı</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>#</th>
+                            <th>Kategori</th>
+                            <th>Başlık</th>
+                            <th>Küçük Resim</th>
+                            <th>Tarih</th>
+                            <th>Okunma Sayısı</th>
+                            <th>Yorum Sayısı</th>
+                            <th>Aktif Mi?</th>
+                            <th>Silinmiş Mi?</th>
+                            <th>Oluşturulma Tarihi</th>
+                            <th>Oluşturan Kullanıcı Adı</th>
+                            <th>Son Düzenlenme Tarihi</th>
+                            <th>Son Düzenleyen Kullanıcı Adı</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.Articles)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Category.Name</td>
+                                <td>@item.Title</td>
+                                <td><img src="~/img/@item.Thumbnail" class="my-image-table" /></td>
+                                <td>@item.Date.ToShortDateString()</td>
+                                <td>@item.ViewsCount</td>
+                                <td>@item.CommentCount</td>
+                                <td>@(item.IsActive ? "Evet" : "Hayır")</td>
+                                <td>@(item.IsDeleted ? "Evet" : "Hayır")</td>
+                                <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                <td>@item.CreatedByName</td>
+                                <td>@item.ModifiedDate.ToString("dd.MM.yyyy")</td>
+                                <td>@item.ModifiedByName</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm btn-update" data-id="@item.Id"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm btn-delete" data-id="@item.Id"><span class="fas fa-minus-circle"></span></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/jsControllerModels/articleIndex.js"></script>
+}
+
+@section Styles
+{
+}

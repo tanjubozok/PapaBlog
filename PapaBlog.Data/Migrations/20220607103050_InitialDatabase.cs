@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PapaBlog.Data.Migrations
 {
-    public partial class CreatingDatabase : Migration
+    public partial class InitialDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -250,8 +250,8 @@ namespace PapaBlog.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "edbda3c6-d101-41bb-b4cb-f6f1dba251ee", "Admin", "ADMIN" },
-                    { 2, "91812f3c-306a-4f69-bdaa-975ecfb679ab", "Editor", "EDITOR" }
+                    { 1, "bebcb2e4-ef57-4eff-bf2c-47bc44349818", "Admin", "ADMIN" },
+                    { 2, "d0393f5c-f5dd-433b-8c69-94450860c997", "Editor", "EDITOR" }
                 });
 
             migrationBuilder.InsertData(
@@ -259,8 +259,8 @@ namespace PapaBlog.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "ab0c971b-2ffa-436e-bb1e-cf05973bf212", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAEODHScms76eyBmMgFFglE7keT6rCq13D2ePQuGcEnndeqPOWaOgoHHAFrnYd0X9fWg==", "1111111111111", true, "default.png", "ac7509b8-6895-4d0f-b533-3c06f5603ae9", false, "admin" },
-                    { 2, 0, "fb472475-42f5-4460-b31d-3cf1f32937f7", "editor@editor.com", true, false, null, "EDITOR@EDITOR.COM", "EDITOR", "AQAAAAEAACcQAAAAEF96mh73BtuUwub4PHWxzBt+bMd5QPaiuduoz5ByqfVpqfoejK5IM4eadNkXBeyI4A==", "2222222222222", true, "default.png", "916bb42e-8e91-4e45-8c4a-93b8922ace43", false, "editor" }
+                    { 1, 0, "a74af058-8d7e-4688-a71b-8d640da0b0ce", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAEFaEXZdml4w4RIv1s2BchApqEf6RswmN2UvVeZiE1bTN73NnSrjU4Ir/FZ3kFCGU7Q==", "1111111111111", true, "default.png", "bc760eec-cd8c-480d-93ca-78f9b932a068", false, "admin" },
+                    { 2, 0, "7820a481-8f0d-4c80-8431-94a55482c811", "editor@editor.com", true, false, null, "EDITOR@EDITOR.COM", "EDITOR", "AQAAAAEAACcQAAAAEIs+mModvCHcOcuWZ8jkY90AHzhgBUplHfvu7l6GliMcdB7v82CbOoDpUjvlsoj3kA==", "2222222222222", true, "default.png", "63a73470-db8c-41b5-b817-6b35bf04a83a", false, "editor" }
                 });
 
             migrationBuilder.InsertData(

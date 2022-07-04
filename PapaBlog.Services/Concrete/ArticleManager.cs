@@ -323,9 +323,7 @@ namespace PapaBlog.Services.Concrete
                     await _unitOfWork.Articles.DeleteAsync(deletedArticle);
                     var result = await _unitOfWork.SaveAsync();
                     if (result == 1)
-                    {
                         return new Result(ResultStatus.Success, Messages.Article.HardDelete());
-                    }
                     return new Result(ResultStatus.Error, Messages.Article.NotHardDelete());
                 }
                 return new Result(ResultStatus.Error, Messages.Article.IdNotFound());
