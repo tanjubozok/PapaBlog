@@ -9,10 +9,9 @@ namespace PapaBlog.Services.AutoMapper.Profiles
     {
         public CategoryProfile()
         {
-            CreateMap<CategoryAddDto, Category>()
-                .ForMember(x => x.CreatedDate, opt => opt.MapFrom(x => DateTime.Now));
-            CreateMap<CategoryUpdateDto, Category>()
-                .ForMember(x => x.ModifiedDate, opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<CategoryAddDto, Category>().ForMember(x => x.CreatedDate, opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<CategoryUpdateDto, Category>().ForMember(x => x.ModifiedDate, opt => opt.MapFrom(x => DateTime.Now));
+
             CreateMap<Category, CategoryUpdateDto>();
         }
     }

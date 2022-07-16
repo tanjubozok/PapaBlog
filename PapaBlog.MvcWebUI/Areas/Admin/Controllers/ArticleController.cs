@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PapaBlog.MvcWebUI.Areas.Admin.Models;
 using PapaBlog.Services.Abstract;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using System.Threading.Tasks;
@@ -11,10 +12,12 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
     public class ArticleController : Controller
     {
         private readonly IArticleService _articleService;
+        private readonly ICategoryService _categoryService;
 
-        public ArticleController(IArticleService articleService)
+        public ArticleController(IArticleService articleService, ICategoryService categoryService)
         {
             _articleService = articleService;
+            _categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
@@ -25,9 +28,17 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             return NotFound();
         }
 
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            return View();
+            var result = await _categoryService.GetAllByNonDeletedAsync();
+            if (result.ResultStatus == ResultStatus.Success)
+            {
+                return View(new ArticleAddViewModel
+                {
+                    Categories = result.Data.Categories
+                });
+            }
+            return NotFound();
         }
 
         [HttpPost]

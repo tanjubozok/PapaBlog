@@ -35,7 +35,6 @@ namespace PapaBlog.Dtos.Concrete.UserDtos
         public string PhoneNumber { get; set; }
 
         [DisplayName("Resim")]
-        [Required(ErrorMessage = "{0} boş geçilemez.")]
         [DataType(DataType.Upload)]
         public IFormFile PictureFile { get; set; }
         public string Picture { get; set; }

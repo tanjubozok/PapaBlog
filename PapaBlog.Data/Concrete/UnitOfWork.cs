@@ -9,9 +9,9 @@ namespace PapaBlog.Data.Concrete
     {
         private readonly PapaBlogContext _dbContext;
 
-        private EfArticleRepository _efArticleRepository;
-        private EfCategoryRepository _efCategoryRepository;
-        private EfCommentRepository _efCommentRepository;
+        private readonly EfArticleRepository _efArticleRepository;
+        private readonly EfCategoryRepository _efCategoryRepository;
+        private readonly EfCommentRepository _efCommentRepository;
 
         public UnitOfWork(PapaBlogContext dbContext)
         {

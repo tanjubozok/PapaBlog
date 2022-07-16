@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using PapaBlog.Dtos.Concrete.ImageDtos;
+using PapaBlog.Entities.ComplexTypes;
 using PapaBlog.MvcWebUI.Helpers.Abstract;
 using PapaBlog.Shared.Utilities.Extensions;
 using PapaBlog.Shared.Utilities.Results.Abstract;
@@ -16,7 +17,9 @@ namespace PapaBlog.MvcWebUI.Helpers.Concrete
     {
         private readonly IWebHostEnvironment _webHost;
         private readonly string _wwwRoot;
-        private readonly string imgFolder = "img";
+        private const string imgFolder = "img";
+        private const string userImagesFolder = "userImages";
+        private const string postImagesFolder = "postImages";
 
         public ImageHelper(IWebHostEnvironment webHost)
         {
@@ -44,21 +47,38 @@ namespace PapaBlog.MvcWebUI.Helpers.Concrete
                 return new DataResult<DeletedImageDto>(ResultStatus.Error, "Böyle bir resim bulunamdı.", null);
         }
 
-        public async Task<IDataResult<UploadedImageDto>> UploadUserImage(string userName, IFormFile pictureFile, string folderName = "userImages")
+        public async Task<IDataResult<UploadedImageDto>> Upload(string name, IFormFile pictureFile, PictureType pictureType, string folderName = null)
         {
+            /* Eğer folderName değişkeni null gelir ise, o zaman resim tipine göre (PictureType) klasör adı ataması yapılır. */
+            folderName ??= pictureType == PictureType.User ? userImagesFolder : postImagesFolder;
+
+            /* Eğer folderName değişkeni ile gelen klasör adı sistemimizde mevcut değilse, yeni bir klasör oluşturulur. */
             if (!Directory.Exists($"{_wwwRoot}/{imgFolder}/{folderName}"))
                 Directory.CreateDirectory($"{_wwwRoot}/{imgFolder}/{folderName}");
 
             DateTime dateTime = new();
+
+            /* Resimin yüklenme sırasındaki ilk adı oldFileName adlı değişkene atanır. */
             var oldFileName = Path.GetFileNameWithoutExtension(pictureFile.FileName);
+
+            /* Resimin uzantısı fileExtension adlı değişkene atanır. */
             var fileExtension = Path.GetExtension(pictureFile.FileName);
-            var newFileName = $"{userName}_{dateTime.FullDateAndTimeStringWithUnderScore()}{fileExtension}";
+
+            var newFileName = $"{name}_{dateTime.FullDateAndTimeStringWithUnderScore()}{fileExtension}";
+
+            /* Kendi parametrelerimiz ile sistemimize uygun yeni bir dosya yolu (path) oluşturulur. */
             var path = Path.Combine($"{_wwwRoot}/{imgFolder}/{folderName}", newFileName);
 
+            /* Sistemimiz için oluşturulan yeni dosya yoluna resim kopyalanır. */
             await using (FileStream stream = new(path, FileMode.Create))
                 await pictureFile.CopyToAsync(stream);
 
-            return new DataResult<UploadedImageDto>(ResultStatus.Success, $"{userName} adlı kullanıcı resimi başarılı bir şekilde yüklemiştir.", new UploadedImageDto
+            /* Resim tipine göre kullanıcı için bir mesaj oluşturulur. */
+            string message = pictureType == PictureType.User
+                ? $"{name} adlı kullanıcı resimi başarılı bir şekilde yüklemiştir."
+                : $"{name} adlı makale resimi başarılı bir şekilde yüklemiştir.";
+
+            return new DataResult<UploadedImageDto>(ResultStatus.Success, message, new UploadedImageDto
             {
                 FullName = $"{folderName}/{newFileName}",
                 OldName = oldFileName,

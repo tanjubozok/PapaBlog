@@ -9,6 +9,7 @@ namespace PapaBlog.Data.Concrete.EfCore.Repositories
     {
         public EfCommentRepository(DbContext dbContext) : base(dbContext)
         {
+
         }
     }
 }

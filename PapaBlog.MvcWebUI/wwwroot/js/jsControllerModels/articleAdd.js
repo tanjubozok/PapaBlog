@@ -63,7 +63,9 @@
                 isRTL: false,
                 showMonthAfterYear: false,
                 yearSuffix: "",
-                duration: 500,
+                duration: 1000,
+                showAnim: "drop",
+                showOptions: { direction: "down" },
                 minDate: -3,
                 maxDate: +3
             });

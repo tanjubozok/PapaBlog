@@ -18,27 +18,27 @@
                     <div asp-validation-summary="All" class="text-danger" id="validation-summary" aria-hidden="true" style="display:none;"></div>
                     <div class="form-group">
                         <label asp-for="UserName"></label>
-                        <input type="text" asp-for="UserName" class="form-control" placeholder="kullanıcı adı">
+                        <input type="text" asp-for="UserName" id="username" class="form-control" placeholder="kullanıcı adı">
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Email"></label>
-                        <input type="email" asp-for="Email" class="form-control" placeholder="e-posta adresi">
+                        <input type="email" asp-for="Email" id="email" class="form-control" placeholder="e-posta adresi">
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Password"></label>
-                        <input type="password" asp-for="Password" class="form-control" placeholder="şifre">
+                        <input type="password" asp-for="Password" id="password" class="form-control" placeholder="şifre">
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="PhoneNumber"></label>
-                        <input type="tel" asp-for="PhoneNumber" class="form-control" placeholder="telefon numarası">
+                        <input type="tel" asp-for="PhoneNumber" id="phoneNumber" class="form-control" placeholder="telefon numarası">
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="PictureFile"></label>
-                        <input type="file" accept="images/*" asp-for="PictureFile" class="form-control-file" placeholder="profil resmi">
+                        <input type="file" accept="images/*" asp-for="PictureFile" id="pictureFile" class="form-control-file" placeholder="profil resmi">
                         <span asp-validation-for="PictureFile" class="text-danger"></span>
                     </div>
                 </form>
@@ -56,3 +56,7 @@
         </div>
     </div>
 </div>
+
+@section Styles{
+    <script src="~/js/jsControllerModels/userAdd.js"></script>
+}

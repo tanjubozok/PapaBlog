@@ -8,19 +8,19 @@
     <meta name="author" content="" />
     <title>@ViewBag.Title || Dashboard</title>
 
-    @await Html.PartialAsync("_PartialCss");
-    @await RenderSectionAsync("Styles",false);
+    @await Html.PartialAsync("_PartialCss")
+    @await RenderSectionAsync("Styles", false)
 
     <link href="~/css/site.css" rel="stylesheet" />
 
 </head>
 <body class="sb-nav-fixed">
 
-    @await Html.PartialAsync("_PartialNavbar");
+    @await Html.PartialAsync("_PartialNavbar")
 
     <div id="layoutSidenav">
 
-        @await Component.InvokeAsync("AdminMenu");
+        @await Component.InvokeAsync("AdminMenu")
 
         <div id="layoutSidenav_content">
             @if (TempData["SuccessMessage"] != null)
@@ -40,6 +40,6 @@
     </div>
 
     @await Html.PartialAsync("_PartialJs")
-    @await RenderSectionAsync("Scripts",false);
+    @await RenderSectionAsync("Scripts", false)
 </body>
 </html>
