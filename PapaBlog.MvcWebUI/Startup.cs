@@ -34,7 +34,8 @@ namespace PapaBlog.MvcWebUI
             services.AddAutoMapper(
                 typeof(ArticleProfile),
                 typeof(CategoryProfile),
-                typeof(UserProfile));
+                typeof(UserProfile),
+                typeof(ViewModelsProfile));
 
             services.LoadMyService();
             services.LoadMyUserSetting(Configuration.GetConnectionString("LocalDb"));
