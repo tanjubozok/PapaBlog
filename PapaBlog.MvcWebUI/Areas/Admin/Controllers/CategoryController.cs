@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PapaBlog.Dtos.Concrete.CategoryDtos;
+using PapaBlog.Entities.Concrete;
 using PapaBlog.MvcWebUI.Areas.Admin.Models;
+using PapaBlog.MvcWebUI.Helpers.Abstract;
 using PapaBlog.Services.Abstract;
 using PapaBlog.Shared.Utilities.Extensions;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
@@ -13,11 +17,12 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin,Editor")]
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, UserManager<User> userManager, IMapper mapper, IImageHelper imageHelper)
+            : base(userManager, mapper, imageHelper)
         {
             _categoryService = categoryService;
         }
@@ -38,7 +43,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var result = await _categoryService.AddAsync(categoryAddDto, "System");
+                var result = await _categoryService.AddAsync(categoryAddDto, LoggedInUser.UserName);
                 if (result.ResultStatus == ResultStatus.Success)
                 {
                     var categoryAddAjaxViewModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel
@@ -71,7 +76,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var result = await _categoryService.UpdateAsync(categoryUpdateDto, "System");
+                var result = await _categoryService.UpdateAsync(categoryUpdateDto, LoggedInUser.UserName);
                 if (result.ResultStatus == ResultStatus.Success)
                 {
                     var categoryUpdateAjaxViewModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
@@ -102,7 +107,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> Delete(int categoryId)
         {
-            var result = await _categoryService.DeleteAsync(categoryId, "System");
+            var result = await _categoryService.DeleteAsync(categoryId, LoggedInUser.UserName);
             var category = JsonSerializer.Serialize(result.Data);
             return Json(category);
         }

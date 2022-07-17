@@ -32,7 +32,7 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
             builder.HasMany<UserToken>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
             builder.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
 
-            var adminUser = new User
+            User adminUser = new()
             {
                 Id = 1,
                 UserName = "admin",
@@ -47,7 +47,7 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
             };
             adminUser.PasswordHash = CreatePasswordHash(adminUser, "12345");
 
-            var editorUser = new User
+            User editorUser = new()
             {
                 Id = 2,
                 UserName = "editor",
@@ -65,9 +65,9 @@ namespace PapaBlog.Data.Concrete.EfCore.Mappings
             builder.HasData(adminUser, editorUser);
         }
 
-        private string CreatePasswordHash(User user, string password)
+        private static string CreatePasswordHash(User user, string password)
         {
-            var passwordHasher = new PasswordHasher<User>();
+            PasswordHasher<User> passwordHasher = new();
             return passwordHasher.HashPassword(user, password);
         }
     }

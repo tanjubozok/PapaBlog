@@ -81,4 +81,8 @@
     <None Include="wwwroot\comingsoon\vendor\tilt\tilt.jquery.min.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\postImages\" />
+  </ItemGroup>
+
 </Project>
