@@ -26,7 +26,6 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Models
         public string Thumbnail { get; set; }
 
         [DisplayName("Küçük Resim Ekle")]
-        [Required(ErrorMessage = "{0} alanı boş geçilemez.")]
         public IFormFile ThumbnailFile { get; set; }
 
         [DisplayName("Tarih")]
@@ -57,8 +56,10 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Models
         public int CategoryId { get; set; }
 
         [DisplayName("Aktif Mi?")]
-        [Required(ErrorMessage = "{0} alanı boş geçilemez.")]
         public bool IsActive { get; set; }
+
+        [Required(ErrorMessage = "Kullanıcı bilgisi zorunlu alandır.")]
+        public int UserId { get; set; }
 
         public IList<Category> Categories { get; set; }
     }

@@ -23,14 +23,14 @@ namespace PapaBlog.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdByName)
+        public async Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdByName, int userId)
         {
             try
             {
                 var article = _mapper.Map<Article>(articleAddDto);
                 article.CreatedByName = createdByName;
                 article.ModifiedByName = createdByName;
-                article.UserId = 1;
+                article.UserId = userId;
                 var addedArticle = await _unitOfWork.Articles.AddAsync(article);
                 var result = await _unitOfWork.SaveAsync();
                 if (result == 1)
@@ -340,7 +340,8 @@ namespace PapaBlog.Services.Concrete
             {
                 if (await _unitOfWork.Articles.AnyAsync(x => x.Id == articleUpdateDto.Id))
                 {
-                    var article = _mapper.Map<Article>(articleUpdateDto);
+                    var oldArticle = await _unitOfWork.Articles.GetAsync(x => x.Id == articleUpdateDto.Id);
+                    var article = _mapper.Map<ArticleUpdateDto, Article>(articleUpdateDto, oldArticle);
                     article.ModifiedByName = modifiedByName;
                     var updadetArticle = await _unitOfWork.Articles.UpdateAsycn(article);
                     var result = await _unitOfWork.SaveAsync();

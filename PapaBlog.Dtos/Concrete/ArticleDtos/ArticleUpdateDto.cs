@@ -63,5 +63,7 @@ namespace PapaBlog.Dtos.Concrete.ArticleDtos
         [DisplayName("Silinsin Mi?")]
         [Required(ErrorMessage = "{0} alanı boş geçilemez.")]
         public bool IsDelete { get; set; }
+
+        public int UserId { get; set; }
     }
 }

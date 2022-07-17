@@ -12,7 +12,7 @@ namespace PapaBlog.Services.Abstract
         Task<IDataResult<ArticleListDto>> GetAllByNonDeletedAsync();
         Task<IDataResult<ArticleListDto>> GetAllByNonDeletedAndActiveAsync();
         Task<IDataResult<ArticleListDto>> GetAllByCategoryAsync(int categoryId);
-        Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdByName);
+        Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdByName, int userId);
         Task<IDataResult<ArticleDto>> UpdateAsync(ArticleUpdateDto articleUpdateDto, string modifiedByName);
         Task<IDataResult<ArticleDto>> DeleteAsync(int articleId, string modifiedByName);
         Task<IResult> HardDeleteAsync(int articleId);

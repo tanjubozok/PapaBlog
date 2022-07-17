@@ -7,6 +7,7 @@ using PapaBlog.Entities.ComplexTypes;
 using PapaBlog.Entities.Concrete;
 using PapaBlog.MvcWebUI.Areas.Admin.Models;
 using PapaBlog.MvcWebUI.Helpers.Abstract;
+using PapaBlog.MvcWebUI.Helpers.Concrete;
 using PapaBlog.Services.Abstract;
 using PapaBlog.Shared.Utilities.Results.ComplexTypes;
 using System.Threading.Tasks;
@@ -56,7 +57,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                 var articleAddDto = Mapper.Map<ArticleAddDto>(model);
                 var imageResult = await ImageHelper.Upload(model.Title, model.ThumbnailFile, PictureType.Post);
                 articleAddDto.Thumbnail = imageResult.Data.FullName;
-                var result = await _articleService.AddAsync(articleAddDto, LoggedInUser.UserName);
+                var result = await _articleService.AddAsync(articleAddDto, LoggedInUser.UserName, LoggedInUser.Id);
                 if (result.ResultStatus == ResultStatus.Success)
                 {
                     TempData.Add("SuccessMessage", result.Message);
@@ -67,6 +68,8 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                     ModelState.AddModelError("", result.Message);
                 }
             }
+            var categoriesResult = await _categoryService.GetAllByNonDeletedAndActiveAsync();
+            model.Categories = categoriesResult.Data.Categories;
             return View(model);
         }
 
@@ -87,9 +90,40 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(int articleId, ArticleUpdateViewModel model)
+        public async Task<IActionResult> Update(ArticleUpdateViewModel model)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                bool isNewThumbnailUploaded = false;
+                var oldThumbnail = model.Thumbnail;
+                if (model.ThumbnailFile != null)
+                {
+                    var uploadedImageResult = await ImageHelper.Upload(model.Title, model.ThumbnailFile, PictureType.Post);
+                    model.Thumbnail = uploadedImageResult.ResultStatus == ResultStatus.Success
+                        ? uploadedImageResult.Data.FullName
+                        : "postImages/default.jpg";
+
+                    if (oldThumbnail == "postImages/default.jpg")
+                        isNewThumbnailUploaded = true;
+                }
+                var articleUpdateDto = Mapper.Map<ArticleUpdateDto>(model);
+                var result = await _articleService.UpdateAsync(articleUpdateDto, LoggedInUser.UserName);
+                if (result.ResultStatus == ResultStatus.Success)
+                {
+                    if (isNewThumbnailUploaded)
+                        ImageHelper.Delete(oldThumbnail);
+
+                    TempData.Add("SuccessMessage", result.Message);
+                    return RedirectToAction("Index", "Article");
+                }
+                else
+                {
+                    ModelState.AddModelError("", result.Message);
+                }
+            }
+            var categories = await _categoryService.GetAllByNonDeletedAndActiveAsync();
+            model.Categories = categories.Data.Categories;
+            return View(model);
         }
     }
 }
