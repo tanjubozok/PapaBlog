@@ -37,8 +37,8 @@ namespace PapaBlog.MvcWebUI
                 typeof(UserProfile),
                 typeof(ViewModelsProfile));
 
-            services.LoadMyService();
             services.LoadMyUserSetting(Configuration.GetConnectionString("LocalDb"));
+            services.LoadMyService();
             services.LoadMyCookieSetting();
 
             services.AddScoped<IImageHelper, ImageHelper>();
@@ -53,11 +53,8 @@ namespace PapaBlog.MvcWebUI
             }
 
             app.UseSession();
-
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 

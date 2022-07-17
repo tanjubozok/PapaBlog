@@ -37,7 +37,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
 
         public async Task<IActionResult> Add()
         {
-            var result = await _categoryService.GetAllByNonDeletedAsync();
+            var result = await _categoryService.GetAllByNonDeletedAndActiveAsync();
             if (result.ResultStatus == ResultStatus.Success)
             {
                 return View(new ArticleAddViewModel
@@ -68,6 +68,28 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
                 }
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Update(int articleId)
+        {
+            var articleResult = await _articleService.GetArticleUpdateDtoAsycn(articleId);
+            var categoriesResult = await _categoryService.GetAllByNonDeletedAndActiveAsync();
+            if (articleResult.ResultStatus == ResultStatus.Success && categoriesResult.ResultStatus == ResultStatus.Success)
+            {
+                var articleUpdateViewModel = Mapper.Map<ArticleUpdateViewModel>(articleResult.Data);
+                articleUpdateViewModel.Categories = categoriesResult.Data.Categories;
+                return View(articleUpdateViewModel);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(int articleId, ArticleUpdateViewModel model)
+        {
+            return View();
         }
     }
 }

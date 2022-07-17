@@ -16,7 +16,7 @@ namespace PapaBlog.MvcWebUI.Helpers.Concrete
     public class ImageHelper : IImageHelper
     {
         private readonly IWebHostEnvironment _webHost;
-        private readonly string _wwwRoot;
+        private readonly string _wwwroot;
         private const string imgFolder = "img";
         private const string userImagesFolder = "userImages";
         private const string postImagesFolder = "postImages";
@@ -24,12 +24,12 @@ namespace PapaBlog.MvcWebUI.Helpers.Concrete
         public ImageHelper(IWebHostEnvironment webHost)
         {
             _webHost = webHost;
-            _wwwRoot = _webHost.WebRootPath;
+            _wwwroot = _webHost.WebRootPath;
         }
 
         public IDataResult<DeletedImageDto> Delete(string pictureName)
         {
-            var fileToDelete = Path.Combine($"{_wwwRoot}/{imgFolder}/", pictureName);
+            var fileToDelete = Path.Combine($"{_wwwroot}/{imgFolder}/", pictureName);
             if (File.Exists(fileToDelete))
             {
                 FileInfo fileInfo = new(fileToDelete);
@@ -53,32 +53,38 @@ namespace PapaBlog.MvcWebUI.Helpers.Concrete
             folderName ??= pictureType == PictureType.User ? userImagesFolder : postImagesFolder;
 
             /* Eğer folderName değişkeni ile gelen klasör adı sistemimizde mevcut değilse, yeni bir klasör oluşturulur. */
-            if (!Directory.Exists($"{_wwwRoot}/{imgFolder}/{folderName}"))
-                Directory.CreateDirectory($"{_wwwRoot}/{imgFolder}/{folderName}");
-
-            DateTime dateTime = new();
+            if (!Directory.Exists($"{_wwwroot}/{imgFolder}/{folderName}"))
+            {
+                Directory.CreateDirectory($"{_wwwroot}/{imgFolder}/{folderName}");
+            }
 
             /* Resimin yüklenme sırasındaki ilk adı oldFileName adlı değişkene atanır. */
-            var oldFileName = Path.GetFileNameWithoutExtension(pictureFile.FileName);
+            string oldFileName = Path.GetFileNameWithoutExtension(pictureFile.FileName);
 
             /* Resimin uzantısı fileExtension adlı değişkene atanır. */
-            var fileExtension = Path.GetExtension(pictureFile.FileName);
+            string fileExtension = Path.GetExtension(pictureFile.FileName);
 
-            var newFileName = $"{name}_{dateTime.FullDateAndTimeStringWithUnderScore()}{fileExtension}";
+            DateTime dateTime = DateTime.Now;
+            /*
+            // Parametre ile gelen değerler kullanılarak yeni bir resim adı oluşturulur.
+            */
+            string newFileName = $"{name}_{dateTime.FullDateAndTimeStringWithUnderScore()}{fileExtension}";
 
             /* Kendi parametrelerimiz ile sistemimize uygun yeni bir dosya yolu (path) oluşturulur. */
-            var path = Path.Combine($"{_wwwRoot}/{imgFolder}/{folderName}", newFileName);
+            var path = Path.Combine($"{_wwwroot}/{imgFolder}/{folderName}", newFileName);
 
             /* Sistemimiz için oluşturulan yeni dosya yoluna resim kopyalanır. */
-            await using (FileStream stream = new(path, FileMode.Create))
+            await using (var stream = new FileStream(path, FileMode.Create))
+            {
                 await pictureFile.CopyToAsync(stream);
+            }
 
             /* Resim tipine göre kullanıcı için bir mesaj oluşturulur. */
-            string message = pictureType == PictureType.User
-                ? $"{name} adlı kullanıcı resimi başarılı bir şekilde yüklemiştir."
-                : $"{name} adlı makale resimi başarılı bir şekilde yüklemiştir.";
+            string nameMessage = pictureType == PictureType.User
+                ? $"{name} adlı kullanıcının resimi başarıyla yüklenmiştir."
+                : $"{name} adlı makalenin resimi başarıyla yüklenmiştir.";
 
-            return new DataResult<UploadedImageDto>(ResultStatus.Success, message, new UploadedImageDto
+            return new DataResult<UploadedImageDto>(ResultStatus.Success, nameMessage, new UploadedImageDto
             {
                 FullName = $"{folderName}/{newFileName}",
                 OldName = oldFileName,

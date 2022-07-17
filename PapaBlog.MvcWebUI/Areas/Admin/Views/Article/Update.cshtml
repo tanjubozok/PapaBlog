@@ -1,0 +1,120 @@
+﻿@model ArticleUpdateViewModel
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Makale Düzenle";
+}
+<div class="container-fluid">
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a></li>
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Article" asp-action="Index">Makaleler</a></li>
+        <li class="breadcrumb-item active">Makale Düzenle</li>
+    </ol>
+    <form asp-controller="Article" asp-action="Update" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="@Model.Id" />
+        <div class="row mt-2">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="text" asp-for="Title" id="articleTitle" class="form-control" placeholder="Makale Başlığı" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <textarea asp-for="Content" id="text-editor" placeholder="makale içerik"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Temel Konfigürasyonlar
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="CategoryId"></label>
+                            <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories,"Id","Name"))" id="categoryList" class="form-control">
+                                <option></option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Date"></label>
+                            <input type="text" asp-for="Date" id="datepicker" class="form-control" value="@DateTime.Now.ToString("dd.MM.yyyy")" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Thumbnail"></label>
+                            <input type="hidden" name="thumbnail" asp-for="Thumbnail" />
+                            <img src="~/img/@Model.Thumbnail" class="img-fluid img-thumbnail" alt="@Model.Thumbnail" style="max-width:64px;max-height:64px;" />
+                            <span asp-validation-for="Thumbnail" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ThumbnailFile"></label>
+                            <input type="file" asp-for="ThumbnailFile" id="thumbnailUpload" accept="image/*" class="form-control-file" />
+                            <span asp-validation-for="ThumbnailFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" asp-for="IsActive" id="isActive" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label"></label>
+                            <span asp-validation-for="IsActive" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success btn-block mt-4">Kaydet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mt-2">
+                <div class="card">
+                    <div class="card-header">
+                        SEO Optimizasyonu
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="SeoAuther"></label>
+                                <input type="text" asp-for="SeoAuther" id="seoWriter" class="form-control" placeholder="yazar adı" />
+                                <span asp-validation-for="SeoAuther" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="SeoTags"></label>
+                                <input type="text" asp-for="SeoTags" id="seoTags" class="form-control" placeholder="makale etiketleri" />
+                                <span asp-validation-for="SeoTags" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label asp-for="SeoDescription"></label>
+                                <textarea asp-for="SeoDescription" id="seoDescription" class="form-control" placeholder="makale açıklama"></textarea>
+                                <span asp-validation-for="SeoDescription" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts
+    {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/trumbowyg.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/langs/tr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/colors/trumbowyg.colors.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/emoji/trumbowyg.emoji.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/fontfamily/trumbowyg.fontfamily.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/fontsize/trumbowyg.fontsize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/js/jsControllerModels/articleAdd.js"></script>
+}
+
+@section Styles
+    {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/ui/trumbowyg.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/colors/ui/trumbowyg.colors.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/emoji/ui/trumbowyg.emoji.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/jquery-ui.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/theme.min.css" />
+    <link href="~/css/select2-bootstrap4.min.css" rel="stylesheet" />
+}
