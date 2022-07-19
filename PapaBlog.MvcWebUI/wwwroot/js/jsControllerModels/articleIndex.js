@@ -24,44 +24,65 @@
                 action: function (e, dt, node, config) {
                     $.ajax({
                         type: 'GET',
-                        url: '/Admin/User/GetAllUsers/',
+                        url: '/Admin/Article/GetAllArticles/',
                         contentType: "application/json",
                         beforeSend: function () {
-                            $('#usersTable').hide();
+                            $('#articlesTable').hide();
                             $('.spinner-border').show();
                         },
                         success: function (data) {
-                            const userListDto = jQuery.parseJSON(data);
+                            const articleResult = jQuery.parseJSON(data);
                             dataTable.clear();
-                            console.log(userListDto);
-                            if (userListDto.ResultStatus === 0) {
-                                $.each(userListDto.Users.$values,
-                                    function (index, user) {
+                            console.log(articleResult);
+                            if (articleResult.Data.ResultStatus === 0) {
+                                let categoriesArray = [];
+                                $.each(articleResult.Data.Articles.$values,
+                                    function (index, article) {
+                                        const newArticle = getJsonNetObject(article, articleResult.Data.Articles.$values);
+                                        let newCategory = getJsonNetObject(newArticle.Category, newArticle);
+                                        console.log(newArticle);
+                                        console.log(newCategory);
+                                        if (newCategory !== null) {
+                                            categoriesArray.push(newCategory);
+                                        }
+                                        if (newCategory === null) {
+                                            newCategory = categoriesArray.find((category) => {
+                                                return category.$id === newArticle.Category.$ref;
+                                            });
+                                        }
                                         const newTableRow = dataTable.row.add([
-                                            user.Id,
-                                            user.UserName,
-                                            user.Email,
-                                            user.PhoneNumber,
-                                            `<img src="/img/${user.Picture}" alt="${user.UserName}" class="my-image-table" />`,
+                                            newArticle.Id,
+                                            newCategory.Name,
+                                            newArticle.Title,
+                                            `<img src="/img/${newArticle.Thumbnail}" alt="${newArticle.Title}" class="my-image-table" />`,
+                                            `${convertToShortDate(newArticle.Date)}`,
+                                            newArticle.ViewsCount,
+                                            newArticle.CommentCount,
+                                            `${newArticle.IsActive ? "Evet" : "Hayır"}`,
+                                            `${newArticle.IsDeleted ? "Evet" : "Hayır"}`,
+                                            `${convertToShortDate(newArticle.CreatedDate)}`,
+                                            newArticle.CreatedByName,
+                                            `${convertToShortDate(newArticle.ModifiedDate)}`,
+                                            newArticle.ModifiedByName,
                                             `
-                                <button class="btn btn-primary btn-sm btn-update" data-id="${user.Id}"><span class="fas fa-edit"></span></button>
-                                <button class="btn btn-danger btn-sm btn-delete" data-id="${user.Id}"><span class="fas fa-minus-circle"></span></button>
+                                <button class="btn btn-primary btn-sm btn-update" data-id="${newArticle.Id}"><span class="fas fa-edit"></span></button>
+                                <button class="btn btn-danger btn-sm btn-delete" data-id="${newArticle.Id}"><span class="fas fa-minus-circle"></span></button>
                                             `
                                         ]).node();
                                         const jqueryTableRow = $(newTableRow);
-                                        jqueryTableRow.attr('name', `${user.Id}`);
+                                        jqueryTableRow.attr('name', `${newArticle.Id}`);
                                     });
                                 dataTable.draw();
                                 $('.spinner-border').hide();
-                                $('#usersTable').fadeIn(1400);
+                                $('#articlesTable').fadeIn(1400);
                             } else {
-                                toastr.error(`${userListDto.Message}`, 'İşlem Başarısız!');
+                                toastr.error(`${articleResult.Data.Message}`, 'İşlem Başarısız!');
                             }
                         },
                         error: function (err) {
                             console.log(err);
                             $('.spinner-border').hide();
-                            $('#usersTable').fadeIn(1000);
+                            $('#articlesTable').fadeIn(1000);
                             toastr.error(`${err.responseText}`, 'Hata!');
                         }
                     });
@@ -316,12 +337,14 @@
 
     $(document).on('click', '.btn-delete', function (event) {
         event.preventDefault();
-        const id = $(this).attr('data-id');
-        const tableRow = $(`[name="${id}"]`);
-        const userName = tableRow.find('td:eq(1)').text();
+        const id = $(this).data('id');
+        const tableRow = $(`[name=${id}]`);
+        console.log(tableRow);
+        const articleTitle = tableRow.find('td:eq(2)').text();
+        console.log(articleTitle);
         Swal.fire({
             title: 'Silmek istediğinize emin misiniz?',
-            text: `${userName} adlı kullanıcı silinicektir!`,
+            text: `${articleTitle} başlıklı makale silinicektir!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -333,14 +356,14 @@
                 $.ajax({
                     type: 'POST',
                     dataType: 'json',
-                    data: { userId: id },
-                    url: '/Admin/User/Delete/',
+                    data: { articleId: id },
+                    url: '/Admin/Article/Delete/',
                     success: function (data) {
-                        const userDto = jQuery.parseJSON(data);
-                        if (userDto.ResultStatus === 0) {
+                        const articleResult = jQuery.parseJSON(data);
+                        if (articleResult.Data.ResultStatus === 0) {
                             Swal.fire(
                                 'Silindi!',
-                                `${userDto.User.UserName} adlı kullanıcı başarıyla silinmiştir.`,
+                                `${articleResult.Data.Message}`,
                                 'success'
                             );
                             dataTable.row(tableRow).remove().draw();
@@ -348,7 +371,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Başarısız İşlem!',
-                                text: `${userDto.Message}`,
+                                text: `${articleResult.Message}`,
                             });
                         }
                     },

@@ -27,6 +27,7 @@ namespace PapaBlog.MvcWebUI.Areas.Admin.Controllers
             _categoryService = categoryService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var result = await _categoryService.GetAllByNonDeletedAsync();

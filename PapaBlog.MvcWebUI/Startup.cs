@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NToastNotify;
 using PapaBlog.MvcWebUI.AutoMapper.Profiles;
 using PapaBlog.MvcWebUI.Helpers.Abstract;
 using PapaBlog.MvcWebUI.Helpers.Concrete;
@@ -24,11 +25,19 @@ namespace PapaBlog.MvcWebUI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddJsonOptions(opt =>
-            {
-                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-                opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            });
+            services.AddControllersWithViews()
+                .AddNToastNotifyToastr(new ToastrOptions()
+                {
+                    ProgressBar = true,
+                    CloseButton = true,
+                    TimeOut = 6000,
+                    PositionClass = ToastPositions.TopRight
+                })
+                .AddJsonOptions(opt =>
+                {
+                    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                });
 
             services.AddSession();
             services.AddAutoMapper(
@@ -57,6 +66,8 @@ namespace PapaBlog.MvcWebUI
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseNToastNotify();
 
             app.UseEndpoints(endpoints =>
             {

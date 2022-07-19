@@ -84,6 +84,7 @@ namespace PapaBlog.Services.Concrete
                 {
                     var deleteArticle = await _unitOfWork.Articles.GetAsync(x => x.Id == articleId);
                     deleteArticle.IsDeleted = true;
+                    deleteArticle.IsActive = false;
                     deleteArticle.ModifiedByName = modifiedByName;
                     deleteArticle.ModifiedDate = DateTime.Now;
                     var deletedArticle = await _unitOfWork.Articles.UpdateAsycn(deleteArticle);
